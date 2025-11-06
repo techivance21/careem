@@ -1,165 +1,166 @@
 "use client";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+
+/**
+ * Hero.tsx — same logic, visuals, and layout
+ * Fonts updated to: Unbounded (headings) + Work Sans (body/text)
+ */
+
+type Slide = {
+  key: "ride" | "delivery" | "money" | "challenge" | "heroes";
+  image: string;
+  objectPosition?: string;
+  heading: string[];
+  cta: { label: string; href: string };
+};
+
+const SLIDES: Slide[] = [
+  { key: "ride", image: "/hero1.png", objectPosition: "50% 40%", heading: ["Fair rides", "for the price you", "both agree on"], cta: { label: "Download the app", href: "#download" } },
+  { key: "delivery", image: "/hero2.png", objectPosition: "50% 45%", heading: ["Fair deals", "in delivery,", "cargo and food"], cta: { label: "Check them all", href: "#delivery" } },
+  { key: "money", image: "/hero3.png", objectPosition: "50% 45%", heading: ["Fair loans", "to drive life", "forward"], cta: { label: "Tell me more", href: "#money" } },
+  { key: "challenge", image: "/hero4.png", objectPosition: "50% 40%", heading: ["Fair choices", "and chances", "for all"], cta: { label: "Find out how", href: "#challenge" } },
+  { key: "heroes", image: "/hero5.png", objectPosition: "50% 40%", heading: ["People of inDrive", "always push", "the limits"], cta: { label: "More stories", href: "#heroes" } },
+];
 
 export default function Hero() {
-  const [count, setCount] = useState(0);
+  const [active, setActive] = useState<number>(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const tabsWrapRef = useRef<HTMLDivElement | null>(null);
+  const btnRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const indicatorRef = useRef<HTMLDivElement | null>(null);
 
-  // smooth count-up for "25+ Years"
+  const themeVars: React.CSSProperties & Record<string, string> = useMemo(
+    () => ({ "--eco": "#00F06B", "--dark": "#024122", "--cta": "#FFD84D", "--ink": "#0B0B0B", "--paper": "#FAFFFB", "--tint": "#DFFFEA" }),
+    []
+  );
+
   useEffect(() => {
-    let start = 0;
-    const end = 25;
-    const duration = 2000;
-    const increment = end / (duration / 50);
-    const timer = setInterval(() => {
-      start += increment;
-      if (start >= end) {
-        clearInterval(timer);
-        setCount(end);
-      } else {
-        setCount(Math.floor(start));
-      }
-    }, 50);
-    return () => clearInterval(timer);
-  }, []);
+    let id: number | null = null;
+    if (!isPaused) {
+      id = window.setInterval(() => setActive((i) => (i + 1) % SLIDES.length), 6000);
+    }
+    return () => { if (id !== null) window.clearInterval(id); };
+  }, [isPaused]);
+
+  const positionIndicator = useCallback(() => {
+    const wrap = tabsWrapRef.current;
+    const indicator = indicatorRef.current;
+    const btn = btnRefs.current[active];
+    if (!wrap || !indicator || !btn) return;
+    const wrapRect = wrap.getBoundingClientRect();
+    const btnRect = btn.getBoundingClientRect();
+    const left = btnRect.left - wrapRect.left + wrap.scrollLeft;
+    indicator.style.width = `${btnRect.width}px`;
+    indicator.style.transform = `translateX(${left}px)`;
+  }, [active]);
+
+  useEffect(() => { positionIndicator(); }, [positionIndicator]);
+
+  useEffect(() => {
+    const wrap = tabsWrapRef.current;
+    const obs = new ResizeObserver(() => positionIndicator());
+    if (wrap) {
+      obs.observe(wrap);
+      const onScroll = () => positionIndicator();
+      wrap.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", positionIndicator);
+      const t = window.setTimeout(() => positionIndicator(), 50);
+      return () => {
+        wrap.removeEventListener("scroll", onScroll);
+        obs.disconnect();
+        window.removeEventListener("resize", positionIndicator);
+        window.clearTimeout(t);
+      };
+    }
+    return () => obs.disconnect();
+  }, [positionIndicator]);
+
+  const go = (dir: 1 | -1) => setActive((i) => (i + dir + SLIDES.length) % SLIDES.length);
 
   return (
-    <div className="relative overflow-hidden">
-      {/* Background */}
-      <div className="relative h-[90vh] flex flex-col justify-center items-center text-center text-white">
-        <Image
-          src="/bg1.png"
-          alt="Techivance background"
-          fill
-          className="object-cover brightness-50"
-        />
-        <div className="relative z-10 px-4 md:px-8">
-          <p className="uppercase text-pink-400 tracking-widest mb-2 text-sm">
-            Welcome to Techivance
-          </p>
-          <h1 className="text-4xl md:text-6xl font-bold leading-tight">
-            We Are Creative Web & <br /> Digital Agency.
-          </h1>
+    <section
+      style={themeVars}
+      className="relative isolate w-full overflow-hidden bg-[var(--paper)] font-[var(--font-worksans)]"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
+      <style jsx global>{`
+        @import url("https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700&family=Work+Sans:wght@400;500;600;700&display=swap");
+        :root {
+          --font-unbounded: 'Unbounded', cursive;
+          --font-worksans: 'Work Sans', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+          font-family: var(--font-unbounded);
+        }
+        body, p, button, a, span, div {
+          font-family: var(--font-worksans);
+        }
+      `}</style>
+
+      {/* Slides */}
+      <div className="relative h-[58vh] min-h-[420px] md:h-[68vh] lg:h-[78vh] w-full">
+        {SLIDES.map((s, idx) => (
+          <div key={s.key} className={`absolute inset-0 transition-opacity duration-700 ${idx === active ? "opacity-100" : "opacity-0"}`} aria-hidden={idx !== active}>
+            <Image src={s.image} alt={s.key} fill sizes="100vw" className="object-cover" style={{ objectPosition: s.objectPosition || "50% 50%" }} priority={idx === active} />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/30 via-black/15 to-black/30" />
+          </div>
+        ))}
+
+        {/* Copy */}
+        <div className="absolute inset-0 mx-auto flex max-w-7xl items-center px-4 sm:px-6 lg:px-8">
+          <div className="max-w-xl sm:max-w-2xl text-white">
+            <h1 className="text-3xl font-extrabold leading-tight sm:text-5xl lg:text-6xl font-[var(--font-unbounded)]">
+              {SLIDES[active].heading.map((line, i) => (
+                <span key={i} className="relative inline-block">
+                  <span className="bg-[var(--eco)] text-black px-1.5 sm:px-2 -rotate-1 inline-block">
+                    {line.split(" ")[0]}{" "}
+                  </span>
+                  <span className="pl-1">{line.split(" ").slice(1).join(" ")}</span>
+                  <br />
+                </span>
+              ))}
+            </h1>
+
+            <a href={SLIDES[active].cta.href} className="mt-5 inline-flex items-center justify-center rounded-full bg-[var(--eco)] px-5 py-3 text-[var(--dark)] font-semibold transition hover:brightness-95 font-[var(--font-worksans)]">
+              {SLIDES[active].cta.label}
+            </a>
+          </div>
         </div>
+
+        {/* Prev/Next */}
+        <button aria-label="Previous slide" onClick={() => go(-1)} className="absolute left-3 top-1/2 hidden -translate-y-1/2 rounded-full bg-white/80 p-2 hover:bg-white sm:inline-flex">
+          <ChevronLeft className="h-6 w-6" />
+        </button>
+        <button aria-label="Next slide" onClick={() => go(1)} className="absolute right-3 top-1/2 hidden -translate-y-1/2 rounded-full bg-white/80 p-2 hover:bg-white sm:inline-flex">
+          <ChevronRight className="h-6 w-6" />
+        </button>
       </div>
 
-      {/* Features Section */}
-      <section className="bg-white shadow-md -mt-16 z-20 relative rounded-2xl mx-4 md:mx-16 p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-        {[
-          {
-            title: "Web Designing",
-            desc: "In power departure, land procurement, liaisoning and working with state.",
-            icon: "/icon1.png",
-          },
-          {
-            title: "Web Development",
-            desc: "In power departure, land procurement, liaisoning and working with state.",
-            icon: "/icon2.png",
-          },
-          {
-            title: "Web Application",
-            desc: "In power departure, land procurement, liaisoning and working with state.",
-            icon: "/icon3.png",
-          },
-        ].map((item, i) => (
-          <motion.div
-            key={i}
-            whileHover={{ scale: 1.05 }}
-            className="flex flex-col items-center text-center p-4 border rounded-xl transition-all duration-300 group hover:bg-pink-50"
-          >
-            <div className="relative">
-              <div className="absolute -top-2 -right-2 w-3 h-3 rounded-full bg-pink-400 group-hover:bg-black transition-all duration-300" />
-              <Image
-                src={item.icon}
-                alt={item.title}
-                width={50}
-                height={50}
-                className="mx-auto mb-3"
-              />
-            </div>
-            <h3 className="font-semibold text-lg mb-2">{item.title}</h3>
-            <p className="text-gray-500 text-sm leading-relaxed">{item.desc}</p>
-          </motion.div>
-        ))}
-      </section>
-
-      {/* Who We Are Section */}
-      <section className="py-20 px-6 md:px-16 grid md:grid-cols-2 gap-10 items-center">
-        <div className="grid grid-cols-2 gap-4">
-          {["/client1.png", "/client2.png", "/client3.png", "/client4.png"].map(
-            (img, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.2 }}
-              >
-                <Image
-                  src={img}
-                  alt={`Client ${i + 1}`}
-                  width={300}
-                  height={250}
-                  className="rounded-2xl object-cover shadow-lg"
-                />
-              </motion.div>
-            )
-          )}
+      {/* Tabs */}
+      <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div ref={tabsWrapRef} className="relative -mt-10 mb-2 flex items-center gap-5 rounded-2xl bg-white/95 px-3 py-2.5 shadow-[0_8px_30px_rgba(0,0,0,0.08)] overflow-x-auto no-scrollbar snap-x font-[var(--font-worksans)]">
+          {SLIDES.map((s, i) => (
+            <button
+              key={s.key}
+              ref={(el) => { btnRefs.current[i] = el; }}
+              className={`relative shrink-0 snap-start px-1 pb-2 text-sm sm:text-[15px] font-medium transition-colors ${i === active ? "text-black" : "text-black/55 hover:text-black"}`}
+              onClick={() => setActive(i)}
+            >
+              {titleCase(s.key)}
+            </button>
+          ))}
+          <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-[3px]">
+            <div ref={indicatorRef} className="absolute h-[3px] rounded-full bg-black/80 transition-all" style={{ width: 64, transform: "translateX(0px)" }} />
+          </div>
         </div>
-
-        <div>
-          <p className="text-pink-500 uppercase font-semibold mb-2">
-            Who We Are
-          </p>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Are you prepared to develop your businesses!
-          </h2>
-          <p className="text-gray-600 mb-6">
-            Web designing in a strong method of simply not a main callings, be
-            that as it may, in an energy for our Organization.
-          </p>
-
-          {/* Counter */}
-          <motion.div
-            className="flex items-center gap-4 mb-6"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-          >
-            <div className="bg-pink-500 text-white rounded-full w-24 h-24 flex items-center justify-center text-3xl font-bold shadow-lg">
-              {count}+
-            </div>
-            <p className="text-gray-700 font-semibold">Years Experience</p>
-          </motion.div>
-
-          {/* Features List */}
-          <ul className="space-y-4">
-            {[
-              "Creative Ideas",
-              "Quality Web Designing",
-              "Marketing Solution",
-            ].map((text, i) => (
-              <motion.li
-                key={i}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.2 }}
-                className="flex items-start gap-3"
-              >
-                <div className="w-5 h-5 mt-1 rounded-full bg-pink-500 flex items-center justify-center text-white font-bold">
-                  ✓
-                </div>
-                <div>
-                  <p className="font-semibold">{text}</p>
-                  <p className="text-gray-500 text-sm">
-                    We utilize vital showcasing strategies that have been
-                    demonstrated programming.
-                  </p>
-                </div>
-              </motion.li>
-            ))}
-          </ul>
-        </div>
-      </section>
-    </div>
+      </div>
+    </section>
   );
+}
+
+function titleCase(key: string) {
+  return key.charAt(0).toUpperCase() + key.slice(1);
 }
