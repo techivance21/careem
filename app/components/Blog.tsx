@@ -5,18 +5,16 @@ import { ArrowRight } from "lucide-react";
 
 /**
  * Blog.tsx — matches the screenshot layout, themed to your palette
- * Needs: /public/blog1.png, /public/blog2.png, /public/blog3.png
  */
 
 export default function Blog() {
-  // Theme tokens (your palette)
-  const themeVars: React.CSSProperties & Record<string, string> = useMemo(
+  const themeVars = useMemo(
     () => ({
-      "--eco": "#00F06B",   // Eco Green (primary)
-      "--dark": "#024122",  // Dark Green (support)
-      "--ink": "#0B0B0B",   // Dark grey (base)
-      "--paper": "#FAFFFB", // Off white
-      "--tint": "#DFFFEA",  // Light green tint
+      "--eco": "#00F06B",
+      "--dark": "#024122",
+      "--ink": "#0B0B0B",
+      "--paper": "#FAFFFB",
+      "--tint": "#DFFFEA",
     }),
     []
   );
@@ -47,17 +45,13 @@ export default function Blog() {
 
   return (
     <section style={themeVars} className="w-full">
-      {/* Top gradient band with a diagonal top edge */}
       <div className="relative w-full bg-gradient-to-r from-[var(--dark)] to-[var(--eco)]">
-        {/* Top diagonal cut */}
         <div
           aria-hidden
           className="absolute -top-10 left-0 h-10 w-full bg-gradient-to-r from-[var(--dark)] to-[var(--eco)]"
           style={{ clipPath: "polygon(0 100%, 18% 0, 100% 0, 100% 100%)" }}
         />
-
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
-          {/* Heading + View all */}
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-[32px] sm:text-[36px] font-extrabold text-white">
               Our blog
@@ -70,11 +64,9 @@ export default function Blog() {
             </a>
           </div>
 
-          {/* Grid: image + text below each, like screenshot */}
           <div className="grid grid-cols-1 gap-x-10 gap-y-6 sm:grid-cols-3">
             {posts.map((p, i) => (
               <article key={i}>
-                {/* Rounded image */}
                 <div className="relative aspect-[1/1] w-full overflow-hidden rounded-[22px]">
                   <Image
                     src={p.img}
@@ -86,20 +78,17 @@ export default function Blog() {
                   />
                 </div>
 
-                {/* Title */}
-                <h3 className="mt-5 text-xl sm:text-[22px] font-extrabold text-[var(--ink)]">
+                <h3 className="mt-5 text-xl sm:text-[22px] font-extrabold text-white">
                   {p.title}
                 </h3>
 
-                {/* Excerpt */}
-                <p className="mt-2 text-[var(--ink)]/80 leading-7 text-[15px]">
+                <p className="mt-2 text-white/90 leading-7 text-[15px]">
                   {p.body}
                 </p>
 
-                {/* CTA pill */}
                 <a
                   href={p.href}
-                  className="mt-4 inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-[var(--dark)] ring-1 ring-black/10"
+                  className="mt-4 inline-flex rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white ring-1 ring-white/20 hover:bg-white/20 transition"
                 >
                   Read more
                 </a>
@@ -109,7 +98,6 @@ export default function Blog() {
         </div>
       </div>
 
-      {/* Bottom pale sweep with diagonal bottom edge to match vibe */}
       <div className="relative w-full bg-gradient-to-r from-[var(--tint)] via-[var(--paper)] to-[var(--tint)]">
         <div
           aria-hidden

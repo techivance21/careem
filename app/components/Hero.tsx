@@ -3,13 +3,8 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-/**
- * Hero.tsx — same logic, visuals, and layout
- * Fonts updated to: Unbounded (headings) + Work Sans (body/text)
- */
-
 type Slide = {
-  key: "ride" | "delivery" | "money" | "challenge" | "heroes";
+  key: "ride" | "delivery" | "courier";
   image: string;
   objectPosition?: string;
   heading: string[];
@@ -17,11 +12,27 @@ type Slide = {
 };
 
 const SLIDES: Slide[] = [
-  { key: "ride", image: "/hero1.png", objectPosition: "50% 40%", heading: ["Fair rides", "for the price you", "both agree on"], cta: { label: "Download the app", href: "#download" } },
-  { key: "delivery", image: "/hero2.png", objectPosition: "50% 45%", heading: ["Fair deals", "in delivery,", "cargo and food"], cta: { label: "Check them all", href: "#delivery" } },
-  { key: "money", image: "/hero3.png", objectPosition: "50% 45%", heading: ["Fair loans", "to drive life", "forward"], cta: { label: "Tell me more", href: "#money" } },
-  { key: "challenge", image: "/hero4.png", objectPosition: "50% 40%", heading: ["Fair choices", "and chances", "for all"], cta: { label: "Find out how", href: "#challenge" } },
-  { key: "heroes", image: "/hero5.png", objectPosition: "50% 40%", heading: ["People of inDrive", "always push", "the limits"], cta: { label: "More stories", href: "#heroes" } },
+  {
+    key: "ride",
+    image: "/hero1.png",
+    objectPosition: "50% 40%",
+    heading: ["Fair rides", "for the price you", "both agree on"],
+    cta: { label: "Download the app", href: "#download" },
+  },
+  {
+    key: "delivery",
+    image: "/hero2.png",
+    objectPosition: "50% 45%",
+    heading: ["Fair deals", "in delivery,", "cargo and food"],
+    cta: { label: "Check them all", href: "#delivery" },
+  },
+  {
+    key: "courier",
+    image: "/hero3.png", // <-- update to your courier image if different
+    objectPosition: "50% 45%",
+    heading: ["Fast courier", "reliable hand-to-hand", "drop-offs"],
+    cta: { label: "Send a package", href: "#courier" },
+  },
 ];
 
 export default function Hero() {
@@ -32,16 +43,28 @@ export default function Hero() {
   const indicatorRef = useRef<HTMLDivElement | null>(null);
 
   const themeVars: React.CSSProperties & Record<string, string> = useMemo(
-    () => ({ "--eco": "#00F06B", "--dark": "#024122", "--cta": "#FFD84D", "--ink": "#0B0B0B", "--paper": "#FAFFFB", "--tint": "#DFFFEA" }),
+    () => ({
+      "--eco": "#00F06B",
+      "--dark": "#024122",
+      "--cta": "#FFD84D",
+      "--ink": "#0B0B0B",
+      "--paper": "#FAFFFB",
+      "--tint": "#DFFFEA",
+    }),
     []
   );
 
   useEffect(() => {
     let id: number | null = null;
     if (!isPaused) {
-      id = window.setInterval(() => setActive((i) => (i + 1) % SLIDES.length), 6000);
+      id = window.setInterval(
+        () => setActive((i) => (i + 1) % SLIDES.length),
+        6000
+      );
     }
-    return () => { if (id !== null) window.clearInterval(id); };
+    return () => {
+      if (id !== null) window.clearInterval(id);
+    };
   }, [isPaused]);
 
   const positionIndicator = useCallback(() => {
@@ -56,7 +79,9 @@ export default function Hero() {
     indicator.style.transform = `translateX(${left}px)`;
   }, [active]);
 
-  useEffect(() => { positionIndicator(); }, [positionIndicator]);
+  useEffect(() => {
+    positionIndicator();
+  }, [positionIndicator]);
 
   useEffect(() => {
     const wrap = tabsWrapRef.current;
@@ -77,7 +102,8 @@ export default function Hero() {
     return () => obs.disconnect();
   }, [positionIndicator]);
 
-  const go = (dir: 1 | -1) => setActive((i) => (i + dir + SLIDES.length) % SLIDES.length);
+  const go = (dir: 1 | -1) =>
+    setActive((i) => (i + dir + SLIDES.length) % SLIDES.length);
 
   return (
     <section
@@ -92,19 +118,29 @@ export default function Hero() {
           --font-unbounded: 'Unbounded', cursive;
           --font-worksans: 'Work Sans', sans-serif;
         }
-        h1, h2, h3, h4, h5, h6 {
-          font-family: var(--font-unbounded);
-        }
-        body, p, button, a, span, div {
-          font-family: var(--font-worksans);
-        }
+        h1, h2, h3, h4, h5, h6 { font-family: var(--font-unbounded); }
+        body, p, button, a, span, div { font-family: var(--font-worksans); }
       `}</style>
 
       {/* Slides */}
       <div className="relative h-[58vh] min-h-[420px] md:h-[68vh] lg:h-[78vh] w-full">
         {SLIDES.map((s, idx) => (
-          <div key={s.key} className={`absolute inset-0 transition-opacity duration-700 ${idx === active ? "opacity-100" : "opacity-0"}`} aria-hidden={idx !== active}>
-            <Image src={s.image} alt={s.key} fill sizes="100vw" className="object-cover" style={{ objectPosition: s.objectPosition || "50% 50%" }} priority={idx === active} />
+          <div
+            key={s.key}
+            className={`absolute inset-0 transition-opacity duration-700 ${
+              idx === active ? "opacity-100" : "opacity-0"
+            }`}
+            aria-hidden={idx !== active}
+          >
+            <Image
+              src={s.image}
+              alt={s.key}
+              fill
+              sizes="100vw"
+              className="object-cover"
+              style={{ objectPosition: s.objectPosition || "50% 50%" }}
+              priority={idx === active}
+            />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/30 via-black/15 to-black/30" />
           </div>
         ))}
@@ -118,42 +154,68 @@ export default function Hero() {
                   <span className="bg-[var(--eco)] text-black px-1.5 sm:px-2 -rotate-1 inline-block">
                     {line.split(" ")[0]}{" "}
                   </span>
-                  <span className="pl-1">{line.split(" ").slice(1).join(" ")}</span>
+                  <span className="pl-1">
+                    {line.split(" ").slice(1).join(" ")}
+                  </span>
                   <br />
                 </span>
               ))}
             </h1>
 
-            <a href={SLIDES[active].cta.href} className="mt-5 inline-flex items-center justify-center rounded-full bg-[var(--eco)] px-5 py-3 text-[var(--dark)] font-semibold transition hover:brightness-95 font-[var(--font-worksans)]">
+            <a
+              href={SLIDES[active].cta.href}
+              className="mt-5 inline-flex items-center justify-center rounded-full bg-[var(--eco)] px-5 py-3 text-[var(--dark)] font-semibold transition hover:brightness-95 font-[var(--font-worksans)]"
+            >
               {SLIDES[active].cta.label}
             </a>
           </div>
         </div>
 
         {/* Prev/Next */}
-        <button aria-label="Previous slide" onClick={() => go(-1)} className="absolute left-3 top-1/2 hidden -translate-y-1/2 rounded-full bg-white/80 p-2 hover:bg-white sm:inline-flex">
+        <button
+          aria-label="Previous slide"
+          onClick={() => go(-1)}
+          className="absolute left-3 top-1/2 hidden -translate-y-1/2 rounded-full bg-white/80 p-2 hover:bg-white sm:inline-flex"
+        >
           <ChevronLeft className="h-6 w-6" />
         </button>
-        <button aria-label="Next slide" onClick={() => go(1)} className="absolute right-3 top-1/2 hidden -translate-y-1/2 rounded-full bg-white/80 p-2 hover:bg-white sm:inline-flex">
+        <button
+          aria-label="Next slide"
+          onClick={() => go(1)}
+          className="absolute right-3 top-1/2 hidden -translate-y-1/2 rounded-full bg-white/80 p-2 hover:bg-white sm:inline-flex"
+        >
           <ChevronRight className="h-6 w-6" />
         </button>
       </div>
 
       {/* Tabs */}
       <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div ref={tabsWrapRef} className="relative -mt-10 mb-2 flex items-center gap-5 rounded-2xl bg-white/95 px-3 py-2.5 shadow-[0_8px_30px_rgba(0,0,0,0.08)] overflow-x-auto no-scrollbar snap-x font-[var(--font-worksans)]">
+        <div
+          ref={tabsWrapRef}
+          className="relative -mt-10 mb-2 flex items-center gap-5 rounded-2xl bg-white/95 px-3 py-2.5 shadow-[0_8px_30px_rgba(0,0,0,0.08)] overflow-x-auto no-scrollbar snap-x font-[var(--font-worksans)]"
+        >
           {SLIDES.map((s, i) => (
             <button
               key={s.key}
-              ref={(el) => { btnRefs.current[i] = el; }}
-              className={`relative shrink-0 snap-start px-1 pb-2 text-sm sm:text-[15px] font-medium transition-colors ${i === active ? "text-black" : "text-black/55 hover:text-black"}`}
+              ref={(el) => {
+                btnRefs.current[i] = el;
+              }}
+              className={`relative shrink-0 snap-start px-1 pb-2 text-sm sm:text-[15px] font-medium transition-colors ${
+                i === active
+                  ? "text-black"
+                  : "text-black/55 hover:text-black"
+              }`}
               onClick={() => setActive(i)}
             >
               {titleCase(s.key)}
             </button>
           ))}
           <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-[3px]">
-            <div ref={indicatorRef} className="absolute h-[3px] rounded-full bg-black/80 transition-all" style={{ width: 64, transform: "translateX(0px)" }} />
+            <div
+              ref={indicatorRef}
+              className="absolute h-[3px] rounded-full bg-black/80 transition-all"
+              style={{ width: 64, transform: "translateX(0px)" }}
+            />
           </div>
         </div>
       </div>

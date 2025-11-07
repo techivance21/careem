@@ -148,11 +148,21 @@ export default function Client() {
                   {/* quote */}
                   <p className="mt-3 rounded-xl border border-black/10 bg-white/70 px-3 py-2 text-sm text-[var(--ink)]/80">“{s.quote}”</p>
 
-                  {/* location */}
-                  <p className="mt-5 flex items-center gap-2 text-white drop-shadow-sm font-semibold">
-                    <MapPin className="h-4 w-4" /> {s.location}
+                  {/* location (black text) + green dot on icon */}
+                  <p className="mt-5 flex items-center gap-2 text-[var(--ink)] font-semibold">
+                    <span className="relative inline-flex items-center">
+                      <MapPin className="h-4 w-4 text-[var(--eco)]" />
+                      {/* tiny green paint dot */}
+                      <span
+                        aria-hidden
+                        className="ml-1 inline-block h-1.5 w-1.5 rounded-full bg-[var(--eco)]"
+                      />
+                    </span>
+                    {s.location}
                   </p>
-                  <p className="text-white/90 text-xs -mt-1 drop-shadow-sm">{s.role}</p>
+
+                  {/* role/name in black */}
+                  <p className="text-[var(--ink)]/80 text-xs -mt-1">{s.role}</p>
 
                   <a href="#story" className="mt-4 inline-flex items-center justify-center rounded-full bg-[var(--ink)] px-4 py-2 text-sm font-semibold text-white hover:bg-black">
                     See the full story
@@ -189,6 +199,11 @@ export default function Client() {
           <div key={svc.title} className="rounded-2xl bg-white ring-1 ring-black/10 shadow-sm p-5 sm:p-6 flex gap-4">
             <div className="relative h-20 w-24 shrink-0">
               <Image src={svc.icon} alt="icon" fill className="object-contain" sizes="96px" />
+              {/* tiny green paint dot on every icon */}
+              <span
+                aria-hidden
+                className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-[var(--eco)]"
+              />
             </div>
             <div>
               <h4 className="text-xl font-bold text-[var(--ink)]">{svc.title}</h4>
