@@ -3,18 +3,18 @@ import React, { useMemo } from "react";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 
-/**
- * Blog.tsx — matches the screenshot layout, themed to your palette
- */
+// Allow CSS variables such as --eco, --dark, etc.
+type CSSVars = React.CSSProperties & Record<`--${string}`, string>;
 
 export default function Blog() {
-  const themeVars = useMemo(
+  // Properly typed CSS variables
+  const themeVars: CSSVars = useMemo(
     () => ({
-      "--eco": "#00F06B",
-      "--dark": "#024122",
-      "--ink": "#0B0B0B",
-      "--paper": "#FAFFFB",
-      "--tint": "#DFFFEA",
+      "--eco": "#00F06B",   // Eco Green
+      "--dark": "#024122",  // Dark Green
+      "--ink": "#0B0B0B",   // Dark Grey
+      "--paper": "#FAFFFB", // Off White
+      "--tint": "#DFFFEA",  // Light Green
     }),
     []
   );
@@ -45,13 +45,16 @@ export default function Blog() {
 
   return (
     <section style={themeVars} className="w-full">
+      {/* Top gradient section */}
       <div className="relative w-full bg-gradient-to-r from-[var(--dark)] to-[var(--eco)]">
         <div
           aria-hidden
           className="absolute -top-10 left-0 h-10 w-full bg-gradient-to-r from-[var(--dark)] to-[var(--eco)]"
           style={{ clipPath: "polygon(0 100%, 18% 0, 100% 0, 100% 100%)" }}
         />
+
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
+          {/* Heading + View all */}
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-[32px] sm:text-[36px] font-extrabold text-white">
               Our blog
@@ -64,9 +67,11 @@ export default function Blog() {
             </a>
           </div>
 
+          {/* Articles Grid */}
           <div className="grid grid-cols-1 gap-x-10 gap-y-6 sm:grid-cols-3">
             {posts.map((p, i) => (
               <article key={i}>
+                {/* Blog Image */}
                 <div className="relative aspect-[1/1] w-full overflow-hidden rounded-[22px]">
                   <Image
                     src={p.img}
@@ -78,14 +83,17 @@ export default function Blog() {
                   />
                 </div>
 
+                {/* Title */}
                 <h3 className="mt-5 text-xl sm:text-[22px] font-extrabold text-white">
                   {p.title}
                 </h3>
 
+                {/* Body Text */}
                 <p className="mt-2 text-white/90 leading-7 text-[15px]">
                   {p.body}
                 </p>
 
+                {/* CTA button */}
                 <a
                   href={p.href}
                   className="mt-4 inline-flex rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white ring-1 ring-white/20 hover:bg-white/20 transition"
@@ -98,6 +106,7 @@ export default function Blog() {
         </div>
       </div>
 
+      {/* Bottom soft color sweep */}
       <div className="relative w-full bg-gradient-to-r from-[var(--tint)] via-[var(--paper)] to-[var(--tint)]">
         <div
           aria-hidden
