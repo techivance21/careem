@@ -65,7 +65,7 @@ export default function ServicesSection() {
             {/* Image */}
             <div className="relative h-40 sm:h-48 md:h-56 lg:h-64">
               <Image
-                src="/service1.png"
+                src="/Service1.png"
                 alt="First ride promotion"
                 fill
                 className="object-contain md:object-right"
