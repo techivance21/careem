@@ -28,7 +28,7 @@ const SLIDES: Slide[] = [
   },
   {
     key: "courier",
-    image: "/hero3.png", // <-- update to your courier image if different
+    image: "/hero3.png", // update if you have a different courier image
     objectPosition: "50% 45%",
     heading: ["Fast courier", "reliable hand-to-hand", "drop-offs"],
     cta: { label: "Send a package", href: "#courier" },
@@ -42,14 +42,14 @@ export default function Hero() {
   const btnRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const indicatorRef = useRef<HTMLDivElement | null>(null);
 
+  // THEME — your palette
   const themeVars: React.CSSProperties & Record<string, string> = useMemo(
     () => ({
-      "--eco": "#00F06B",
-      "--dark": "#024122",
-      "--cta": "#FFD84D",
+      "--eco": "#00F06B",   // ECO GREEN
+      "--dark": "#024122",  // DARK GREEN
       "--ink": "#0B0B0B",
       "--paper": "#FAFFFB",
-      "--tint": "#DFFFEA",
+      "--tint": "#DFFFEA",  // LIGHT GREEN
     }),
     []
   );
@@ -57,14 +57,9 @@ export default function Hero() {
   useEffect(() => {
     let id: number | null = null;
     if (!isPaused) {
-      id = window.setInterval(
-        () => setActive((i) => (i + 1) % SLIDES.length),
-        6000
-      );
+      id = window.setInterval(() => setActive((i) => (i + 1) % SLIDES.length), 6000);
     }
-    return () => {
-      if (id !== null) window.clearInterval(id);
-    };
+    return () => { if (id !== null) window.clearInterval(id); };
   }, [isPaused]);
 
   const positionIndicator = useCallback(() => {
@@ -79,9 +74,7 @@ export default function Hero() {
     indicator.style.transform = `translateX(${left}px)`;
   }, [active]);
 
-  useEffect(() => {
-    positionIndicator();
-  }, [positionIndicator]);
+  useEffect(() => { positionIndicator(); }, [positionIndicator]);
 
   useEffect(() => {
     const wrap = tabsWrapRef.current;
@@ -102,8 +95,7 @@ export default function Hero() {
     return () => obs.disconnect();
   }, [positionIndicator]);
 
-  const go = (dir: 1 | -1) =>
-    setActive((i) => (i + dir + SLIDES.length) % SLIDES.length);
+  const go = (dir: 1 | -1) => setActive((i) => (i + dir + SLIDES.length) % SLIDES.length);
 
   return (
     <section
@@ -127,9 +119,7 @@ export default function Hero() {
         {SLIDES.map((s, idx) => (
           <div
             key={s.key}
-            className={`absolute inset-0 transition-opacity duration-700 ${
-              idx === active ? "opacity-100" : "opacity-0"
-            }`}
+            className={`absolute inset-0 transition-opacity duration-700 ${idx === active ? "opacity-100" : "opacity-0"}`}
             aria-hidden={idx !== active}
           >
             <Image
@@ -141,7 +131,8 @@ export default function Hero() {
               style={{ objectPosition: s.objectPosition || "50% 50%" }}
               priority={idx === active}
             />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/30 via-black/15 to-black/30" />
+            {/* Dark-green tinted veil for readability, matching theme */}
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[var(--dark)]/35 via-black/15 to-[var(--dark)]/35" />
           </div>
         ))}
 
@@ -162,29 +153,30 @@ export default function Hero() {
               ))}
             </h1>
 
+            {/* CTA: Dark Green, white text */}
             <a
               href={SLIDES[active].cta.href}
-              className="mt-5 inline-flex items-center justify-center rounded-full bg-[var(--eco)] px-5 py-3 text-[var(--dark)] font-semibold transition hover:brightness-95 font-[var(--font-worksans)]"
+              className="mt-5 inline-flex items-center justify-center rounded-full bg-[var(--dark)] px-5 py-3 text-white font-semibold transition hover:brightness-110 font-[var(--font-worksans)]"
             >
               {SLIDES[active].cta.label}
             </a>
           </div>
         </div>
 
-        {/* Prev/Next */}
+        {/* Prev/Next — themed */}
         <button
           aria-label="Previous slide"
           onClick={() => go(-1)}
-          className="absolute left-3 top-1/2 hidden -translate-y-1/2 rounded-full bg-white/80 p-2 hover:bg-white sm:inline-flex"
+          className="absolute left-3 top-1/2 hidden -translate-y-1/2 rounded-full bg-[var(--tint)]/90 p-2 hover:bg-[var(--tint)] sm:inline-flex"
         >
-          <ChevronLeft className="h-6 w-6" />
+          <ChevronLeft className="h-6 w-6 text-[var(--dark)]" />
         </button>
         <button
           aria-label="Next slide"
           onClick={() => go(1)}
-          className="absolute right-3 top-1/2 hidden -translate-y-1/2 rounded-full bg-white/80 p-2 hover:bg-white sm:inline-flex"
+          className="absolute right-3 top-1/2 hidden -translate-y-1/2 rounded-full bg-[var(--tint)]/90 p-2 hover:bg-[var(--tint)] sm:inline-flex"
         >
-          <ChevronRight className="h-6 w-6" />
+          <ChevronRight className="h-6 w-6 text-[var(--dark)]" />
         </button>
       </div>
 
@@ -192,18 +184,14 @@ export default function Hero() {
       <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <div
           ref={tabsWrapRef}
-          className="relative -mt-10 mb-2 flex items-center gap-5 rounded-2xl bg-white/95 px-3 py-2.5 shadow-[0_8px_30px_rgba(0,0,0,0.08)] overflow-x-auto no-scrollbar snap-x font-[var(--font-worksans)]"
+          className="relative -mt-10 mb-2 flex items-center gap-5 rounded-2xl bg-[var(--tint)]/95 px-3 py-2.5 shadow-[0_8px_30px_rgba(0,0,0,0.08)] overflow-x-auto no-scrollbar snap-x font-[var(--font-worksans)]"
         >
           {SLIDES.map((s, i) => (
             <button
               key={s.key}
-              ref={(el) => {
-                btnRefs.current[i] = el;
-              }}
-              className={`relative shrink-0 snap-start px-1 pb-2 text-sm sm:text-[15px] font-medium transition-colors ${
-                i === active
-                  ? "text-black"
-                  : "text-black/55 hover:text-black"
+              ref={(el) => { btnRefs.current[i] = el; }}
+              className={`relative shrink-0 snap-start px-1 pb-2 text-sm sm:text-[15px] font-semibold transition-colors ${
+                i === active ? "text-[var(--dark)]" : "text-[var(--ink)]/70 hover:text-[var(--dark)]"
               }`}
               onClick={() => setActive(i)}
             >
@@ -213,7 +201,7 @@ export default function Hero() {
           <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-[3px]">
             <div
               ref={indicatorRef}
-              className="absolute h-[3px] rounded-full bg-black/80 transition-all"
+              className="absolute h-[3px] rounded-full bg-[var(--eco)] transition-all"
               style={{ width: 64, transform: "translateX(0px)" }}
             />
           </div>

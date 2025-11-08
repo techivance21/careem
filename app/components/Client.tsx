@@ -1,23 +1,18 @@
 "use client";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 
 /**
- * Client.tsx — Story slider + services grid (theme: Eco Green)
- *
+ * Client.tsx — Story slider + services grid (Eco theme)
  * Assets expected in /public:
  *  - client1.png, client2.png
  *  - icon1.png, icon2.png, icon3.png, icon4.png
  */
 
-// -----------------------------
-// Data
-// -----------------------------
-
 type Story = {
   id: number;
-  image: string; // client image path
+  image: string;
   location: string;
   role: string;
   countryCount: number;
@@ -70,17 +65,11 @@ const SERVICES = [
   },
 ];
 
-// -----------------------------
-// Component
-// -----------------------------
-
 export default function Client() {
   const [idx, setIdx] = useState(0);
-  const isFirstRender = useRef(true);
-  const intervalRef = useRef<number | null>(null);
 
   // Theme tokens
-  const themeVars: React.CSSProperties & Record<string, string> = useMemo(
+  const themeVars = useMemo(
     () => ({
       "--eco": "#00F06B", // Primary Eco Green
       "--dark": "#024122", // Dark Green
@@ -92,24 +81,28 @@ export default function Client() {
     []
   );
 
-  // autoplay
+  // Autoplay (TS-safe cleanup)
   useEffect(() => {
-    intervalRef.current = window.setInterval(() => {
+    const id = window.setInterval(() => {
       setIdx((i) => (i + 1) % STORIES.length);
     }, 6000);
     return () => {
-      if (intervalRef.current !== null) window.clearInterval(intervalRef.current);
+      window.clearInterval(id);
     };
   }, []);
 
   const go = (dir: 1 | -1) => setIdx((i) => (i + dir + STORIES.length) % STORIES.length);
 
   return (
-    <section style={themeVars} className="w-full bg-[var(--butter)]">
+    <section style={themeVars as React.CSSProperties} className="w-full bg-[var(--butter)]">
       {/* Top Copy */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-10 sm:pt-12">
-        <p className="text-center text-[13px] font-semibold tracking-wide text-[var(--dark)]">Challenging injustice to make the world fairer for</p>
-        <h2 className="mt-2 text-center text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[var(--ink)]">1 Billion People</h2>
+        <p className="text-center text-[13px] font-semibold tracking-wide text-[var(--dark)]">
+          Challenging injustice to make the world fairer for
+        </p>
+        <h2 className="mt-2 text-center text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[var(--ink)]">
+          1 Billion People
+        </h2>
       </div>
 
       {/* Slider */}
@@ -119,7 +112,7 @@ export default function Client() {
           <div className="hidden md:block rounded-2xl bg-white/60 ring-1 ring-black/5 h-[360px]" />
 
           {/* main card */}
-          <div className="relative rounded-2xl bg-white ring-1 ring-black/5 shadow-[0_8px_24px_rgba(0,0,0,0.08)] p-4 sm:p-6 md:col-span-1 h-[420px] overflow-hidden">
+          <div className="relative rounded-2xl bg-white ring-1 ring-black/5 shadow-[0_8px_24px_rgba(0,0,0,0.08)] p-4 sm:p-6 h-[420px] overflow-hidden">
             {/* lime diamond background */}
             <div className="pointer-events-none absolute -left-20 top-8 h-64 w-64 rotate-45 rounded-lg bg-[var(--eco)]/90" />
             <div className="pointer-events-none absolute left-32 -bottom-20 h-56 w-56 rotate-45 rounded-lg bg-[var(--tint)]" />
@@ -127,44 +120,54 @@ export default function Client() {
             {STORIES.map((s, i) => (
               <article
                 key={s.id}
-                className={`absolute inset-0 grid grid-cols-1 sm:grid-cols-2 items-center gap-4 transition-opacity duration-700 ${i === idx ? "opacity-100" : "opacity-0"}`}
+                className={`absolute inset-0 grid grid-cols-1 sm:grid-cols-2 items-center gap-4 transition-opacity duration-700 ${
+                  i === idx ? "opacity-100" : "opacity-0"
+                }`}
                 aria-hidden={i !== idx}
               >
                 {/* Person image */}
-                <div className="relative order-2 sm:order-1 h-full flex items-end sm:items-center">
-                  <div className="relative h-48 w-48 sm:h-64 sm:w-64 mx-auto sm:mx-0 rounded-full overflow-hidden ring-4 ring-white shadow-md">
-                    <Image src={s.image} alt={s.location} fill sizes="(max-width: 640px) 192px, 256px" className="object-cover" />
+                <div className="relative h-full flex items-end sm:items-center">
+                  <div className="relative h-48 w-48 sm:h-64 sm:w-64 mx-auto rounded-full overflow-hidden ring-4 ring-white shadow-md">
+                    <Image
+                      src={s.image}
+                      alt={s.location}
+                      fill
+                      sizes="(max-width: 640px) 192px, 256px"
+                      className="object-cover"
+                    />
                   </div>
                 </div>
 
                 {/* Text panel */}
-                <div className="order-1 sm:order-2 flex flex-col justify-center">
+                <div className="flex flex-col justify-center">
                   {/* badge */}
                   <div className="inline-flex items-baseline gap-2 rounded-xl bg-[var(--butter)] px-3 py-1 text-[var(--ink)] w-max">
                     <span className="text-xl font-extrabold">{s.countryCount}</span>
-                    <span className="text-xs uppercase tracking-wide text-[var(--ink)]/70">countries</span>
+                    <span className="text-xs uppercase tracking-wide text-[var(--ink)]/70">
+                      countries
+                    </span>
                   </div>
 
                   {/* quote */}
-                  <p className="mt-3 rounded-xl border border-black/10 bg-white/70 px-3 py-2 text-sm text-[var(--ink)]/80">“{s.quote}”</p>
+                  <p className="mt-3 rounded-xl border border-black/10 bg-white/70 px-3 py-2 text-sm text-[var(--ink)]/80">
+                    “{s.quote}”
+                  </p>
 
-                  {/* location (black text) + green dot on icon */}
+                  {/* location (black text) + eco-green dot */}
                   <p className="mt-5 flex items-center gap-2 text-[var(--ink)] font-semibold">
-                    <span className="relative inline-flex items-center">
-                      <MapPin className="h-4 w-4 text-[var(--eco)]" />
-                      {/* tiny green paint dot */}
-                      <span
-                        aria-hidden
-                        className="ml-1 inline-block h-1.5 w-1.5 rounded-full bg-[var(--eco)]"
-                      />
-                    </span>
+                    <MapPin className="h-4 w-4 text-[var(--eco)]" />
+                    <span className="h-1.5 w-1.5 rounded-full bg-[var(--eco)] inline-block" />
                     {s.location}
                   </p>
 
                   {/* role/name in black */}
                   <p className="text-[var(--ink)]/80 text-xs -mt-1">{s.role}</p>
 
-                  <a href="#story" className="mt-4 inline-flex items-center justify-center rounded-full bg-[var(--ink)] px-4 py-2 text-sm font-semibold text-white hover:bg-black">
+                  {/* CTA: dark green button */}
+                  <a
+                    href="#story"
+                    className="mt-4 inline-flex items-center justify-center rounded-full bg-[var(--dark)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--dark)]/90 transition"
+                  >
                     See the full story
                   </a>
                 </div>
@@ -173,10 +176,18 @@ export default function Client() {
 
             {/* slider controls */}
             <div className="absolute left-1/2 -bottom-6 flex -translate-x-1/2 items-center gap-2">
-              <button onClick={() => go(-1)} aria-label="Previous" className="grid h-8 w-8 place-items-center rounded-full bg-white shadow ring-1 ring-black/10">
+              <button
+                onClick={() => go(-1)}
+                aria-label="Previous"
+                className="grid h-8 w-8 place-items-center rounded-full bg-white shadow ring-1 ring-black/10"
+              >
                 <ChevronLeft className="h-4 w-4" />
               </button>
-              <button onClick={() => go(1)} aria-label="Next" className="grid h-8 w-8 place-items-center rounded-full bg-white shadow ring-1 ring-black/10">
+              <button
+                onClick={() => go(1)}
+                aria-label="Next"
+                className="grid h-8 w-8 place-items-center rounded-full bg-white shadow ring-1 ring-black/10"
+              >
                 <ChevronRight className="h-4 w-4" />
               </button>
             </div>
@@ -189,17 +200,24 @@ export default function Client() {
 
       {/* Services headline */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-14">
-        <div className="mx-auto w-max rounded-full bg-black text-white text-xs px-3 py-1">EcoRide app</div>
-        <h3 className="mt-3 text-center text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[var(--ink)]">One app, many services</h3>
+        <div className="mx-auto w-max rounded-full bg-[var(--dark)] text-white text-xs px-3 py-1">
+          EcoRide app
+        </div>
+        <h3 className="mt-3 text-center text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[var(--ink)]">
+          One app, many services
+        </h3>
       </div>
 
       {/* Services grid */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-8 mb-16 grid grid-cols-1 gap-5 md:grid-cols-2">
         {SERVICES.map((svc) => (
-          <div key={svc.title} className="rounded-2xl bg-white ring-1 ring-black/10 shadow-sm p-5 sm:p-6 flex gap-4">
+          <div
+            key={svc.title}
+            className="rounded-2xl bg-white ring-1 ring-black/10 shadow-sm p-5 sm:p-6 flex gap-4"
+          >
             <div className="relative h-20 w-24 shrink-0">
               <Image src={svc.icon} alt="icon" fill className="object-contain" sizes="96px" />
-              {/* tiny green paint dot on every icon */}
+              {/* tiny eco-green dot on every icon */}
               <span
                 aria-hidden
                 className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-[var(--eco)]"
@@ -210,7 +228,11 @@ export default function Client() {
               <p className="mt-1 text-sm text-[var(--ink)]/70">{svc.blurb}</p>
               <div className="mt-3 space-y-1 text-sm font-medium text-[var(--dark)]">
                 {svc.links.map((l) => (
-                  <div key={l}><a href="#" className="hover:underline">{l}</a></div>
+                  <div key={l}>
+                    <a href="#" className="hover:underline">
+                      {l}
+                    </a>
+                  </div>
                 ))}
               </div>
             </div>

@@ -3,18 +3,17 @@ import React, { useMemo } from "react";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 
-// Allow CSS variables such as --eco, --dark, etc.
 type CSSVars = React.CSSProperties & Record<`--${string}`, string>;
 
 export default function Blog() {
-  // Properly typed CSS variables
   const themeVars: CSSVars = useMemo(
     () => ({
       "--eco": "#00F06B",   // Eco Green
-      "--dark": "#024122",  // Dark Green
-      "--ink": "#0B0B0B",   // Dark Grey
-      "--paper": "#FAFFFB", // Off White
-      "--tint": "#DFFFEA",  // Light Green
+      "--dark": "#024122",  // Deep Premium Green (button base)
+      "--ink": "#0B0B0B",   // Rich Black/Grey
+      "--paper": "#F9FDFB", // Softer Off White
+      "--tint": "#DFFFEA",  // Light mint wash
+      "--overlay": "rgba(255,255,255,0.15)",
     }),
     []
   );
@@ -44,59 +43,64 @@ export default function Blog() {
   ];
 
   return (
-    <section style={themeVars} className="w-full">
-      {/* Top gradient section */}
-      <div className="relative w-full bg-gradient-to-r from-[var(--dark)] to-[var(--eco)]">
+    <section style={themeVars} className="w-full font-[var(--font-worksans)]">
+      {/* TOP GRADIENT */}
+      <div className="relative w-full bg-gradient-to-r from-[var(--dark)] via-[var(--eco)]/55 to-[var(--eco)]">
         <div
           aria-hidden
-          className="absolute -top-10 left-0 h-10 w-full bg-gradient-to-r from-[var(--dark)] to-[var(--eco)]"
-          style={{ clipPath: "polygon(0 100%, 18% 0, 100% 0, 100% 100%)" }}
+          className="absolute -top-10 left-0 h-10 w-full bg-gradient-to-r from-[var(--dark)] via-[var(--eco)]/55 to-[var(--eco)]"
+          style={{ clipPath: "polygon(0 100%, 16% 0, 100% 0, 100% 100%)" }}
         />
 
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
-          {/* Heading + View all */}
-          <div className="mb-4 flex items-center justify-between">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
+          {/* Heading Row */}
+          <div className="mb-6 flex items-center justify-between">
             <h2 className="text-[32px] sm:text-[36px] font-extrabold text-white">
               Our blog
             </h2>
+
+            {/* View all — subtle glass */}
             <a
-              href="#view-all"
-              className="inline-flex items-center gap-1 rounded-full bg-white/10 px-3 py-1 text-sm font-semibold text-white hover:bg-white/15"
+              href="#"
+              className="inline-flex items-center gap-1 rounded-full bg-white/10 px-3 py-1 text-sm font-semibold text-white backdrop-blur-sm hover:bg-white/20 transition"
             >
               View all <ArrowRight className="h-4 w-4" />
             </a>
           </div>
 
-          {/* Articles Grid */}
-          <div className="grid grid-cols-1 gap-x-10 gap-y-6 sm:grid-cols-3">
-            {posts.map((p, i) => (
-              <article key={i}>
-                {/* Blog Image */}
-                <div className="relative aspect-[1/1] w-full overflow-hidden rounded-[22px]">
+          {/* BLOG GRID */}
+          <div className="grid grid-cols-1 gap-x-10 gap-y-10 sm:grid-cols-3">
+            {posts.map((post, i) => (
+              <article
+                key={i}
+                className="group transition-transform duration-300 hover:-translate-y-1"
+              >
+                {/* Image */}
+                <div className="relative aspect-[1/1] w-full overflow-hidden rounded-[22px] shadow-lg shadow-black/10 group-hover:shadow-xl group-hover:shadow-black/20 transition">
                   <Image
-                    src={p.img}
-                    alt={p.title}
+                    src={post.img}
+                    alt={post.title}
                     fill
-                    className="object-cover"
-                    sizes="(max-width: 1024px) 100vw, 360px"
+                    sizes="100vw"
+                    className="object-cover group-hover:scale-[1.03] transition"
                     priority={i === 0}
                   />
                 </div>
 
                 {/* Title */}
-                <h3 className="mt-5 text-xl sm:text-[22px] font-extrabold text-white">
-                  {p.title}
+                <h3 className="mt-5 text-xl sm:text-[22px] font-extrabold text-white tracking-tight">
+                  {post.title}
                 </h3>
 
-                {/* Body Text */}
-                <p className="mt-2 text-white/90 leading-7 text-[15px]">
-                  {p.body}
+                {/* Description */}
+                <p className="mt-2 text-white/85 leading-7 text-[15px]">
+                  {post.body}
                 </p>
 
-                {/* CTA button */}
+                {/* CTA — DARK GREEN BUTTON */}
                 <a
-                  href={p.href}
-                  className="mt-4 inline-flex rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white ring-1 ring-white/20 hover:bg-white/20 transition"
+                  href={post.href}
+                  className="mt-4 inline-flex rounded-full bg-[var(--dark)] px-5 py-2 text-sm font-semibold text-white shadow-[0_0_14px_rgba(0,240,107,0.35)] hover:bg-[var(--dark)]/90 transition"
                 >
                   Read more
                 </a>
@@ -106,7 +110,7 @@ export default function Blog() {
         </div>
       </div>
 
-      {/* Bottom soft color sweep */}
+      {/* SOFT MINT SWEEP */}
       <div className="relative w-full bg-gradient-to-r from-[var(--tint)] via-[var(--paper)] to-[var(--tint)]">
         <div
           aria-hidden

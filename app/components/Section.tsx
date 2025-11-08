@@ -1,12 +1,6 @@
 "use client";
 import React from "react";
-import { Smile } from "lucide-react";
-import { ArrowRight } from "lucide-react";
-
-/**
- * Section.tsx — Fonts updated (Unbounded + Work Sans)
- * No layout or logic changed
- */
+import { Smile, ArrowRight } from "lucide-react";
 
 type Item = {
   titleTop: string;
@@ -17,33 +11,37 @@ type Item = {
 };
 
 const ITEMS: Item[] = [
+  // Go — DARK GREEN
   {
     titleTop: "Go",
     titleBottom: "anywhere",
     bullets: ["Rides", "Taxi", "Bike", "CarRental", "SchoolRides"],
-    bg: "bg-[#3E37E5]",
+    bg: "bg-[var(--dark)]",
     text: "text-white",
   },
+  // Eat — LIGHT GREEN
   {
     titleTop: "Eat",
     titleBottom: "anytime",
     bullets: ["Food", "DineOut"],
-    bg: "bg-[#DFFFEA]",
-    text: "text-[#024122]",
+    bg: "bg-[var(--tint)]",
+    text: "text-[var(--dark)]",
   },
+  // Courier — ECO GREEN
   {
     titleTop: "Courier",
     titleBottom: "anywhere",
     bullets: ["Send Parcel", "Documents", "Boxes", "Door-to-Door"],
-    bg: "bg-[#7B61FF]",
-    text: "text-[#E9FFF4]",
+    bg: "bg-[var(--eco)]",
+    text: "text-[var(--dark)]",
   },
+  // Pay — TEAL MIST ✅
   {
     titleTop: "Pay",
     titleBottom: "anyone",
     bullets: ["Pay", "Donations", "Send money"],
-    bg: "bg-[#031A35]",
-    text: "text-white",
+    bg: "bg-[#3DD9A7]", // TEAL MIST
+    text: "text-[var(--dark)]",
   },
 ];
 
@@ -52,17 +50,17 @@ export default function Section() {
     <section
       style={
         {
-          "--eco": "#00F06B",
-          "--dark": "#024122",
+          "--eco": "#00F06B",     // ECO GREEN
+          "--dark": "#024122",    // DARK GREEN
           "--cta": "#FFD84D",
           "--ink": "#0B0B0B",
           "--paper": "#FAFFFB",
-          "--tint": "#DFFFEA",
+          "--tint": "#DFFFEA",    // LIGHT GREEN
         } as React.CSSProperties
       }
       className="w-full bg-[var(--paper)] font-[var(--font-worksans)]"
     >
-      {/* Add fonts */}
+      {/* Fonts */}
       <style jsx global>{`
         @import url("https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700&family=Work+Sans:wght@400;500;600;700&display=swap");
         :root {
@@ -89,40 +87,41 @@ export default function Section() {
 }
 
 function Card({ titleTop, titleBottom, bullets, bg, text }: Item) {
-  const bulletColor = text.includes("#024122")
-    ? "text-[#024122]"
-    : "text-white";
+  const iconColor =
+    text.includes("text-[var(--dark)]") ? "text-[var(--dark)]" : "text-white";
+
+  const chipBg = bg.includes("bg-[var(--dark)]")
+    ? "bg-white/10"
+    : "bg-[var(--dark)]/10";
+
+  const arrowColor =
+    text.includes("text-[var(--dark)]") ? "text-[var(--dark)]" : "text-white";
 
   return (
     <div
       className={`relative ${bg} ${text} rounded-2xl sm:rounded-3xl p-6 sm:p-7 lg:p-8 overflow-hidden min-h-[320px] flex`}
     >
       <div className="flex flex-col">
-        <h3 className="text-5xl leading-none font-extrabold tracking-tight font-[var(--font-unbounded)]">
+        <h3 className="text-5xl leading-none font-extrabold font-[var(--font-unbounded)]">
           {titleTop}
         </h3>
-        <div className="mt-1 text-3xl font-extrabold tracking-tight font-[var(--font-unbounded)]">
+        <div className="mt-1 text-3xl font-extrabold font-[var(--font-unbounded)]">
           {titleBottom}
         </div>
 
-        <ul className="mt-6 space-y-3 text-base/6 font-[var(--font-worksans)]">
+        <ul className="mt-6 space-y-3 text-base font-[var(--font-worksans)]">
           {bullets.map((b) => (
             <li key={b} className="flex items-center gap-2">
-              <Smile className={`${bulletColor} h-4 w-4`} />
+              <Smile className={`${iconColor} h-4 w-4`} />
               <span className="font-semibold opacity-95">{b}</span>
             </li>
           ))}
         </ul>
       </div>
 
-      {/* Arrow bottom-right */}
       <div className="absolute right-5 bottom-5">
-        <div className="grid h-9 w-9 place-items-center rounded-full bg-white/10">
-          <ArrowRight
-            className={
-              text.includes("#024122") ? "text-[#024122]" : "text-white"
-            }
-          />
+        <div className={`grid h-9 w-9 place-items-center rounded-full ${chipBg}`}>
+          <ArrowRight className={`${arrowColor}`} />
         </div>
       </div>
     </div>
