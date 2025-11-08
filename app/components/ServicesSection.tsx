@@ -3,7 +3,7 @@
 import React, { useMemo } from "react";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
-import { RiCarFill, RiTakeawayFill, RiTruckFill } from "react-icons/ri";
+import { RiCarFill, RiBusFill, RiTruckFill } from "react-icons/ri";
 
 // CSS variables helper for theme
 type CSSVars = React.CSSProperties & Record<`--${string}`, string>;
@@ -27,9 +27,9 @@ export default function ServicesSection() {
       subtitle: "Book a comfortable ride to your destination",
     },
     {
-      icon: <RiTakeawayFill className="h-6 w-6" />,
-      title: "Food Delivery",
-      subtitle: "Order food from your favorite restaurants",
+      icon: <RiBusFill className="h-6 w-6" />,
+      title: "Cab Service",
+      subtitle: "Affordable cab rides anytime, anywhere",
     },
     {
       icon: <RiTruckFill className="h-6 w-6" />,

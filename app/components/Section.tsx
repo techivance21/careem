@@ -19,14 +19,16 @@ const ITEMS: Item[] = [
     bg: "bg-[var(--dark)]",
     text: "text-white",
   },
-  // Eat — LIGHT GREEN
+
+  // **Cab Services** — LIGHT GREEN
   {
-    titleTop: "Eat",
+    titleTop: "Cab",
     titleBottom: "anytime",
-    bullets: ["Food", "DineOut"],
+    bullets: ["City Taxi", "Micro", "Mini", "Premium"],
     bg: "bg-[var(--tint)]",
     text: "text-[var(--dark)]",
   },
+
   // Courier — ECO GREEN
   {
     titleTop: "Courier",
@@ -35,11 +37,12 @@ const ITEMS: Item[] = [
     bg: "bg-[var(--eco)]",
     text: "text-[var(--dark)]",
   },
-  // Pay — TEAL MIST ✅
+
+  // **Ride+ Comfort** — TEAL
   {
-    titleTop: "Pay",
-    titleBottom: "anyone",
-    bullets: ["Pay", "Donations", "Send money"],
+    titleTop: "Ride+",
+    titleBottom: "comfort",
+    bullets: ["AC Premium", "Priority Pickup", "Extra Comfort", "Verified Drivers"],
     bg: "bg-[#3DD9A7]", // TEAL MIST
     text: "text-[var(--dark)]",
   },
