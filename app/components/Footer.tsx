@@ -1,292 +1,167 @@
 "use client";
+
+import React from "react";
 import Image from "next/image";
-import {
-  Globe,
-  MapPin,
-  HelpCircle,
-  Car,
-  Facebook,
-  Twitter,
-  Instagram,
-  Linkedin,
-  Youtube,
-} from "lucide-react";
+import Link from "next/link";
+import { MapPin, Mail, Phone, ArrowUpRight, MessageCircle, Globe2 } from "lucide-react";
 
-export default function Footer() {
+const Footer: React.FC = () => {
   return (
-    <footer
-      className="relative w-full text-white overflow-hidden"
-      style={
-        {
-          // Theme tokens (single source of truth)
-          "--eco": "#00F06B",     // ECO GREEN
-          "--light": "#DFFFEA",   // LIGHT GREEN
-          "--dark": "#024122",    // DARK GREEN
-          "--teal": "#3DD9A7",    // TEAL MIST
-          "--mint": "#B3FFE4",    // SKY MINT
-        } as React.CSSProperties
-      }
-    >
-      {/* Embedded CSS (subtle brand animation) */}
-      <style jsx>{`
-        @keyframes ecoGradientShift {
-          0% {
-            background-position: 0% 50%;
-          }
-          50% {
-            background-position: 100% 50%;
-          }
-          100% {
-            background-position: 0% 50%;
-          }
-        }
-        @keyframes ecoBlobs {
-          0% {
-            transform: translate(-6%, -8%) scale(1);
-            filter: blur(48px);
-          }
-          50% {
-            transform: translate(6%, 4%) scale(1.12);
-            filter: blur(52px);
-          }
-          100% {
-            transform: translate(-6%, -8%) scale(1);
-            filter: blur(48px);
-          }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .eco-anim,
-          .eco-blobs {
-            animation: none !important;
-          }
-        }
-      `}</style>
+    <footer className="relative mt-16 bg-[#020D08] text-[#E5FFF4]">
+      {/* subtle top accent line */}
+      <div className="h-[3px] w-full bg-gradient-to-r from-[#00F06B] via-[#3DD9A7] to-[#B3FFE4]" />
 
-      {/* Subtle dark-green → teal → eco sweep */}
-      <div
-        className="absolute inset-0 -z-10 eco-anim"
-        style={{
-          background:
-            "linear-gradient(120deg, rgba(2,65,34,0.98), rgba(61,217,167,0.95), rgba(0,240,107,0.92))",
-          backgroundSize: "220% 220%",
-          animation: "ecoGradientShift 16s ease-in-out infinite",
-        }}
-      />
+      {/* soft glow background */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -top-24 left-[-6rem] h-64 w-64 rounded-full bg-[#00F06B]/12 blur-3xl" />
+        <div className="absolute bottom-[-4rem] right-[-4rem] h-64 w-64 rounded-full bg-[#3DD9A7]/18 blur-3xl" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(179,255,228,0.08),transparent_60%)]" />
+      </div>
 
-      {/* Soft mint glows (adds depth, not rainbow) */}
-      <div
-        className="absolute inset-0 -z-10 eco-blobs mix-blend-screen"
-        style={{
-          background:
-            "radial-gradient(34% 34% at 20% 30%, rgba(179,255,228,0.25) 0%, rgba(179,255,228,0) 60%)," + // sky mint
-            "radial-gradient(32% 32% at 78% 26%, rgba(223,255,234,0.22) 0%, rgba(223,255,234,0) 60%)," + // light green
-            "radial-gradient(36% 36% at 72% 78%, rgba(0,240,107,0.18) 0%, rgba(0,240,107,0) 60%)",
-          animation: "ecoBlobs 18s ease-in-out infinite",
-        }}
-      />
+      <div className="relative mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+        {/* TOP GRID */}
+        <div className="grid gap-10 md:grid-cols-3 lg:gap-12">
+          {/* Column 1: Brand */}
+          <div>
+            <Link href="#home" className="inline-flex items-center gap-3">
+              <div className="relative h-9 w-auto sm:h-10">
+                <Image
+                  src="/logo.png"
+                  alt="SDrive logo"
+                  width={160}
+                  height={40}
+                  className="h-full w-auto"
+                />
+              </div>
+              <div className="flex flex-col leading-tight">
+                <span className="text-sm font-semibold tracking-[0.18em] text-[#B3FFE4] uppercase">
+                  SDrive
+                </span>
+                <span className="text-[11px] font-medium text-[#7FEEC7] tracking-[0.22em] uppercase">
+                  Smart City Rides
+                </span>
+              </div>
+            </Link>
 
-      {/* Content */}
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14">
-        {/* Logo + quick actions */}
-        <div className="flex items-center justify-between flex-wrap gap-6">
-          <div className="flex items-center gap-3">
-            <Image
-              src="/logo.png"
-              alt="sDrive"
-              width={280}
-              height={92}
-              className="h-16 sm:h-[68px] w-auto drop-shadow-[0_6px_24px_rgba(0,0,0,0.35)]"
-              priority
-            />
-            <span className="text-3xl sm:text-4xl font-extrabold tracking-tight">
-              sDrive
-            </span>
+            <p className="mt-4 max-w-sm text-xs sm:text-[13px] text-[#C3F5E4]">
+              SDrive is building a movement for safe, dignified and electric mobility
+              across African cities — connecting riders, drivers, couriers and partners
+              through one platform.
+            </p>
+
+            <div className="mt-5 flex flex-wrap items-center gap-2 text-[11px] text-[#92E8C5]">
+              <span className="inline-flex items-center gap-1 rounded-full bg-white/5 px-2.5 py-1">
+                <Globe2 className="h-3.5 w-3.5 text-[#00F06B]" />
+                <span>SDrive · a Summer Set Continental brand</span>
+              </span>
+            </div>
           </div>
 
-          {/* Desktop actions */}
-          <div className="hidden md:flex items-center gap-3">
-            <button className="inline-flex items-center gap-2 rounded-full border border-white/18 bg-white/10 px-4 py-2 text-sm hover:bg-white/14 transition">
-              <MapPin className="h-4 w-4" /> South Africa
-            </button>
-            <button className="inline-flex items-center gap-2 rounded-full border border-white/18 bg-white/10 px-4 py-2 text-sm hover:bg-white/14 transition">
-              <Globe className="h-4 w-4" /> English
-            </button>
-            <button className="inline-flex items-center gap-2 rounded-full border border-white/18 bg-white/10 px-4 py-2 text-sm hover:bg-white/14 transition">
-              <HelpCircle className="h-4 w-4" /> Help Centre
-            </button>
-            <button className="inline-flex items-center gap-2 rounded-full bg-[var(--eco)] px-4 py-2 text-sm font-semibold text-[var(--dark)] shadow-[0_10px_30px_rgba(0,240,107,0.25)] hover:brightness-95 transition">
-              <Car className="h-4 w-4" /> Book your ride
-            </button>
+          {/* Column 2: Navigation */}
+          <div className="text-sm">
+            <h3 className="text-xs font-semibold uppercase tracking-[0.22em] text-[#B3FFE4]">
+              Product
+            </h3>
+            <div className="mt-3 grid grid-cols-2 gap-3 text-[13px] sm:gap-2">
+              <div className="space-y-2">
+                <FooterLink href="#services">Services</FooterLink>
+                <FooterLink href="#lease-car">Lease a Car</FooterLink>
+                <FooterLink href="#bike-leasing">Lease a Bike</FooterLink>
+                <FooterLink href="#taxi-service">Taxi Service</FooterLink>
+                <FooterLink href="#delivery-service">Delivery Service</FooterLink>
+              </div>
+              <div className="space-y-2">
+                <FooterLink href="#partners">Partners</FooterLink>
+                <FooterLink href="#about">About SDrive</FooterLink>
+                <FooterLink href="#terms-conditions">Terms &amp; Conditions</FooterLink>
+                <FooterLink href="#privacy">Privacy Notice</FooterLink>
+                <FooterLink href="#help-center">Help Center</FooterLink>
+              </div>
+            </div>
+          </div>
+
+          {/* Column 3: Contact / CTA */}
+          <div>
+            <h3 className="text-xs font-semibold uppercase tracking-[0.22em] text-[#B3FFE4]">
+              Contact &amp; Support
+            </h3>
+
+            <div className="mt-3 space-y-2 text-[13px]">
+              <div className="flex items-start gap-2">
+                <MapPin className="mt-0.5 h-4 w-4 text-[#00F06B]" />
+                <p className="text-[#C3F5E4]">
+                  Operating across African cities with HQ support from UAE.
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Mail className="h-4 w-4 text-[#3DD9A7]" />
+                <a
+                  href="mailto:support@sdrive.africa"
+                  className="text-[#E5FFF4] hover:text-[#00F06B]"
+                >
+                  support@sdrive.africa
+                </a>
+              </div>
+              <div className="flex items-center gap-2">
+                <Phone className="h-4 w-4 text-[#3DD9A7]" />
+                <span className="text-[#C3F5E4]">+971 · contact via app for local support</span>
+              </div>
+            </div>
+
+            {/* Mini “get in touch” CTA */}
+            <div className="mt-5 rounded-2xl border border-[#00F06B]/35 bg-white/5 p-3 text-[11px] text-[#C3F5E4] backdrop-blur">
+              <div className="mb-2 flex items-center justify-between gap-2">
+                <span className="font-semibold text-[#E5FFF4]">
+                  Partner with SDrive
+                </span>
+                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#00F06B]/15 text-[#00F06B]">
+                  <ArrowUpRight className="h-3.5 w-3.5" />
+                </span>
+              </div>
+              <p>
+                Fleet owners, businesses and charging partners can plug into the SDrive
+                network and grow with us.
+              </p>
+              <button className="mt-3 inline-flex items-center gap-1 rounded-full bg-[#00F06B] px-3 py-1.5 text-[11px] font-semibold text-[#024122] shadow-[0_8px_24px_rgba(0,240,107,0.35)] hover:bg-[#00d65f]">
+                Talk to our team
+                <MessageCircle className="h-3.5 w-3.5" />
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Link columns */}
-        <div className="mt-12 grid grid-cols-2 gap-10 sm:grid-cols-4 text-white/90 text-sm">
-          <div>
-            <h4 className="text-lg font-extrabold">Services</h4>
-            <ul className="mt-4 space-y-3">
-              <li>
-                <a href="#" className="hover:underline">
-                  Go
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:underline">
-                  Eat
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:underline">
-                  Courier
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:underline">
-                  Pay
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:underline">
-                  sDrive Plus
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-lg font-extrabold">Partners</h4>
-            <ul className="mt-4 space-y-3">
-              <li>
-                <a href="#" className="hover:underline">
-                  Corporate packages
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:underline">
-                  Restaurant delivery
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:underline">
-                  B2B delivery
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:underline">
-                  Become a supplier
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-lg font-extrabold">Join our team</h4>
-            <ul className="mt-4 space-y-3">
-              <li>
-                <a href="#" className="hover:underline">
-                  About us
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:underline">
-                  Engineering at sDrive
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:underline">
-                  Careers
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:underline">
-                  Explore roles
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:underline">
-                  Why sDrive
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-lg font-extrabold">About us</h4>
-            <ul className="mt-4 space-y-3">
-              <li>
-                <a href="#" className="hover:underline">
-                  Our social impact
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:underline">
-                  Information security
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:underline">
-                  Blog
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        {/* Mobile quick actions */}
-        <div className="mt-10 grid grid-cols-2 gap-3 md:hidden">
-          <button className="inline-flex items-center justify-center gap-2 rounded-full border border-white/18 bg-white/10 px-4 py-2 text-sm hover:bg-white/14 transition">
-            <MapPin className="h-4 w-4" />
-            South Africa
-          </button>
-          <button className="inline-flex items-center justify-center gap-2 rounded-full border border-white/18 bg-white/10 px-4 py-2 text-sm hover:bg-white/14 transition">
-            <Globe className="h-4 w-4" />
-            English
-          </button>
-          <button className="inline-flex items-center justify-center gap-2 rounded-full border border-white/18 bg-white/10 px-4 py-2 text-sm hover:bg-white/14 transition col-span-2">
-            <HelpCircle className="h-4 w-4" />
-            Help Centre
-          </button>
-          <button className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--eco)] px-4 py-2 text-sm font-semibold text-[var(--dark)] shadow-[0_10px_30px_rgba(0,240,107,0.25)] hover:brightness-95 transition col-span-2">
-            <Car className="h-4 w-4" />
-            Book your ride
-          </button>
-        </div>
-
-        {/* Divider */}
-        <div className="mt-12 h-px bg-white/25" />
-
-        {/* Bottom bar */}
-        <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-6 text-sm text-white/90">
-          <p>sDrive © {new Date().getFullYear()} — All rights reserved.</p>
-
-          <div className="flex gap-6">
-            <a href="#" className="hover:opacity-90">
-              Terms
-            </a>
-            <a href="#" className="hover:opacity-90">
-              Privacy
-            </a>
-          </div>
-
-          <div className="flex gap-4">
-            <a aria-label="Facebook" href="#" className="hover:opacity-85">
-              <Facebook className="h-5 w-5" />
-            </a>
-            <a aria-label="Twitter" href="#" className="hover:opacity-85">
-              <Twitter className="h-5 w-5" />
-            </a>
-            <a aria-label="Instagram" href="#" className="hover:opacity-85">
-              <Instagram className="h-5 w-5" />
-            </a>
-            <a aria-label="LinkedIn" href="#" className="hover:opacity-85">
-              <Linkedin className="h-5 w-5" />
-            </a>
-            <a aria-label="YouTube" href="#" className="hover:opacity-85">
-              <Youtube className="h-5 w-5" />
-            </a>
+        {/* BOTTOM BAR */}
+        <div className="mt-8 border-t border-white/10 pt-4 text-[11px] text-[#8DDDC0] flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <p>
+            © {new Date().getFullYear()} SDrive Mobility Technologies Ltd. All rights
+            reserved.
+          </p>
+          <div className="flex flex-wrap items-center gap-3">
+            <button className="rounded-full border border-white/15 px-2.5 py-1 text-[10px] text-[#C3F5E4] hover:bg-white/5">
+              English · EN
+            </button>
+            <p className="text-[10px] text-[#7ADAB9]">
+              Built for safe, electric and dignified mobility across Africa.
+            </p>
           </div>
         </div>
       </div>
     </footer>
   );
-}
+};
+
+type FooterLinkProps = {
+  href: string;
+  children: React.ReactNode;
+};
+
+const FooterLink: React.FC<FooterLinkProps> = ({ href, children }) => (
+  <Link
+    href={href}
+    className="text-[#C3F5E4] hover:text-[#00F06B] transition-colors"
+  >
+    {children}
+  </Link>
+);
+
+export default Footer;

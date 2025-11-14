@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown, Car } from "lucide-react";
 
 export default function Navbar({ current = "Services" }: { current?: string }) {
   const [open, setOpen] = useState(false);
@@ -14,21 +14,21 @@ export default function Navbar({ current = "Services" }: { current?: string }) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Only the three items you asked for
   const navItems = [
     { label: "Services", href: "#services" },
     { label: "Partners", href: "#partners" },
     { label: "About us", href: "#about" },
   ];
 
-  // Dark theme variables
+  // SDrive theme
   const themeVars: React.CSSProperties & Record<string, string> = {
-    "--eco": "#00F06B",
-    "--dark": "#0A0A0A",
-    "--cta": "#FFD84D",
-    "--ink": "#FFFFFF",     // text color on dark
-    "--paper": "#000000",   // navbar background
-    "--tint": "rgba(255,255,255,0.08)", // subtle active underline
+    "--eco": "#00F06B", // ECO GREEN
+    "--light": "#DFFFEA", // LIGHT GREEN
+    "--dark-green": "#024122", // DARK GREEN
+    "--teal": "#3DD9A7", // TEAL MIST
+    "--sky": "#B3FFE4", // SKY MINT
+    "--ink": "#FFFFFF",
+    "--paper": "#020A06", // deep dark green/black mix
   };
 
   return (
@@ -42,21 +42,59 @@ export default function Navbar({ current = "Services" }: { current?: string }) {
         :root {
           --nav-font: "Unbounded", "Work Sans", sans-serif;
         }
+
+        @keyframes carFloat {
+          0%,
+          100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-2px);
+          }
+        }
+
+        @keyframes shimmerRoute {
+          0% {
+            transform: translateX(-40%);
+          }
+          100% {
+            transform: translateX(140%);
+          }
+        }
       `}</style>
 
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* increased navbar height */}
         <div className="flex h-28 items-center justify-between">
-          {/* Bigger logo for visibility */}
+          {/* Logo + SDrive brand */}
           <a href="#home" className="flex items-center gap-3 group">
-            <Image
-              src="/logo.png"
-              alt="Logo"
-              width={240}
-              height={60}
-              className="h-12 w-auto transition-transform group-hover:scale-[1.02]"
-              priority
-            />
+            <div className="flex items-center gap-3">
+              <Image
+                src="/logo.png"
+                alt="SDrive Logo"
+                width={240}
+                height={60}
+                className="h-12 w-auto transition-transform group-hover:scale-[1.02]"
+                priority
+              />
+
+              <div className="flex flex-col leading-tight">
+                <div className="flex items-center gap-1">
+                  <Car
+                    className="h-4 w-4 text-[var(--eco)] animate-[carFloat_2.2s_ease-in-out_infinite]"
+                    aria-hidden="true"
+                  />
+                  <span className="text-lg font-semibold tracking-tight text-[var(--ink)]">
+                    SDrive
+                  </span>
+                </div>
+                <div className="mt-1 flex items-center gap-2 text-[10px] uppercase tracking-[0.16em] text-[var(--sky)]/80">
+                  <div className="relative inline-flex h-[3px] w-14 overflow-hidden rounded-full bg-[var(--light)]/15">
+                    <span className="absolute inset-y-0 w-1/2 rounded-full bg-[var(--eco)]/90 animate-[shimmerRoute_2.4s_linear_infinite]" />
+                  </div>
+                  <span>Smart city rides</span>
+                </div>
+              </div>
+            </div>
             <span className="sr-only">Home</span>
           </a>
 
@@ -70,30 +108,28 @@ export default function Navbar({ current = "Services" }: { current?: string }) {
                   href={item.href}
                   className={`relative rounded-full px-4 py-3 text-base font-medium transition-colors ${
                     active
-                      ? "text-[var(--ink)]"
+                      ? "text-[var(--eco)]"
                       : "text-[var(--ink)]/80 hover:text-[var(--ink)]"
                   }`}
                 >
                   {item.label}
-                  {active && (
-                    <span className="pointer-events-none absolute inset-x-1 -bottom-0.5 h-2 rounded-full bg-[var(--tint)]" />
-                  )}
+                  {/* underline removed */}
                 </a>
               );
             })}
           </div>
 
-          {/* Actions (adjusted for dark bg) */}
+          {/* Desktop actions */}
           <div className="hidden items-center gap-2 sm:gap-3 md:flex">
             <div className="relative group">
-              <button className="inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/5 px-4 py-3 text-sm text-[var(--ink)]/90 hover:bg-white/10">
+              <button className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/5 px-4 py-3 text-sm text-[var(--ink)]/85 hover:bg-white/10">
                 English <ChevronDown className="h-4 w-4" />
               </button>
             </div>
 
             <a
               href="#signin"
-              className="inline-flex items-center justify-center rounded-full bg-[var(--eco)] px-5 py-3 text-sm font-semibold text-[var(--dark)] shadow-[0_8px_30px_rgba(0,240,107,0.25)] hover:brightness-95"
+              className="inline-flex items-center justify-center rounded-full bg-[var(--eco)] px-5 py-3 text-sm font-semibold text-[var(--ink)] transition-transform duration-150 hover:-translate-y-0.5 hover:bg-[#00d65f]"
             >
               Sign In
             </a>
@@ -126,27 +162,24 @@ export default function Navbar({ current = "Services" }: { current?: string }) {
                     href={item.href}
                     className={`flex items-center justify-between px-1 py-4 text-base ${
                       active
-                        ? "text-[var(--ink)]"
+                        ? "text-[var(--eco)]"
                         : "text-[var(--ink)]/80 hover:text-[var(--ink)]"
                     }`}
                     onClick={() => setOpen(false)}
                   >
                     {item.label}
-                    {active && (
-                      <span className="ml-3 inline-block h-3 w-3 rounded-full bg-[var(--eco)]" />
-                    )}
                   </a>
                 );
               })}
             </div>
 
             <div className="mt-3 flex items-center gap-2">
-              <button className="inline-flex w-full items-center justify-center gap-1 rounded-full border border-white/15 bg-white/5 px-5 py-3 text-sm text-[var(--ink)]/90 hover:bg-white/10">
+              <button className="inline-flex w-full items-center justify-center gap-1 rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm text-[var(--ink)]/90 hover:bg_white/10">
                 English <ChevronDown className="h-4 w-4" />
               </button>
               <a
                 href="#signin"
-                className="inline-flex w-full items-center justify-center rounded-full bg-[var(--eco)] px-5 py-3 text-sm font-semibold text-[var(--dark)] shadow-[0_8px_30px_rgba(0,240,107,0.25)]"
+                className="inline-flex w-full items-center justify-center rounded-full bg-[var(--eco)] px-5 py-3 text-sm font-semibold text-[var(--ink)] hover:bg-[#00d65f]"
                 onClick={() => setOpen(false)}
               >
                 Sign In
@@ -156,8 +189,7 @@ export default function Navbar({ current = "Services" }: { current?: string }) {
         </div>
       </nav>
 
-      {/* accent bar kept */}
-      <div className="h-[3px] bg-[var(--eco)]" />
+      {/* bottom green bar removed */}
     </header>
   );
 }

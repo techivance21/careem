@@ -1,216 +1,304 @@
 "use client";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import Image from "next/image";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 
-type Slide = {
-  key: "ride" | "delivery" | "courier";
-  image: string;
-  objectPosition?: string;
-  heading: string[];
-  cta: { label: string; href: string };
-};
+import React from "react";
+import { Car, Bike, Bolt, Navigation, Package } from "lucide-react";
 
-const SLIDES: Slide[] = [
-  {
-    key: "ride",
-    image: "/hero1.png",
-    objectPosition: "50% 40%",
-    heading: ["Fair rides", "for the price you", "both agree on"],
-    cta: { label: "Download the app", href: "#download" },
-  },
-  {
-    key: "delivery",
-    image: "/hero2.png",
-    objectPosition: "50% 45%",
-    heading: ["Fair deals", "in delivery,", "cargo and food"],
-    cta: { label: "Check them all", href: "#delivery" },
-  },
-  {
-    key: "courier",
-    image: "/hero3.png", // update if you have a different courier image
-    objectPosition: "50% 45%",
-    heading: ["Fast courier", "reliable hand-to-hand", "drop-offs"],
-    cta: { label: "Send a package", href: "#courier" },
-  },
-];
-
-export default function Hero() {
-  const [active, setActive] = useState<number>(0);
-  const [isPaused, setIsPaused] = useState(false);
-  const tabsWrapRef = useRef<HTMLDivElement | null>(null);
-  const btnRefs = useRef<Array<HTMLButtonElement | null>>([]);
-  const indicatorRef = useRef<HTMLDivElement | null>(null);
-
-  // THEME — your palette
-  const themeVars: React.CSSProperties & Record<string, string> = useMemo(
-    () => ({
-      "--eco": "#00F06B",   // ECO GREEN
-      "--dark": "#024122",  // DARK GREEN
-      "--ink": "#0B0B0B",
-      "--paper": "#FAFFFB",
-      "--tint": "#DFFFEA",  // LIGHT GREEN
-    }),
-    []
-  );
-
-  useEffect(() => {
-    let id: number | null = null;
-    if (!isPaused) {
-      id = window.setInterval(() => setActive((i) => (i + 1) % SLIDES.length), 6000);
-    }
-    return () => { if (id !== null) window.clearInterval(id); };
-  }, [isPaused]);
-
-  const positionIndicator = useCallback(() => {
-    const wrap = tabsWrapRef.current;
-    const indicator = indicatorRef.current;
-    const btn = btnRefs.current[active];
-    if (!wrap || !indicator || !btn) return;
-    const wrapRect = wrap.getBoundingClientRect();
-    const btnRect = btn.getBoundingClientRect();
-    const left = btnRect.left - wrapRect.left + wrap.scrollLeft;
-    indicator.style.width = `${btnRect.width}px`;
-    indicator.style.transform = `translateX(${left}px)`;
-  }, [active]);
-
-  useEffect(() => { positionIndicator(); }, [positionIndicator]);
-
-  useEffect(() => {
-    const wrap = tabsWrapRef.current;
-    const obs = new ResizeObserver(() => positionIndicator());
-    if (wrap) {
-      obs.observe(wrap);
-      const onScroll = () => positionIndicator();
-      wrap.addEventListener("scroll", onScroll, { passive: true });
-      window.addEventListener("resize", positionIndicator);
-      const t = window.setTimeout(() => positionIndicator(), 50);
-      return () => {
-        wrap.removeEventListener("scroll", onScroll);
-        obs.disconnect();
-        window.removeEventListener("resize", positionIndicator);
-        window.clearTimeout(t);
-      };
-    }
-    return () => obs.disconnect();
-  }, [positionIndicator]);
-
-  const go = (dir: 1 | -1) => setActive((i) => (i + dir + SLIDES.length) % SLIDES.length);
-
+const Hero: React.FC = () => {
   return (
     <section
-      style={themeVars}
-      className="relative isolate w-full overflow-hidden bg-[var(--paper)] font-[var(--font-worksans)]"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
+      id="home"
+      className="relative overflow-hidden bg-[#020A06] py-16 sm:py-20 lg:py-24"
     >
-      <style jsx global>{`
-        @import url("https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700&family=Work+Sans:wght@400;500;600;700&display=swap");
-        :root {
-          --font-unbounded: 'Unbounded', cursive;
-          --font-worksans: 'Work Sans', sans-serif;
+      {/* soft gradient background glow */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -top-32 -left-24 h-72 w-72 rounded-full bg-[#00F06B]/10 blur-3xl" />
+        <div className="absolute bottom-[-6rem] right-[-4rem] h-80 w-80 rounded-full bg-[#3DD9A7]/15 blur-3xl" />
+        <div className="absolute inset-x-0 top-1/3 h-px bg-gradient-to-r from-transparent via-[#B3FFE4]/30 to-transparent" />
+      </div>
+
+      <style jsx>{`
+        @keyframes floatSoft {
+          0%,
+          100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-8px);
+          }
         }
-        h1, h2, h3, h4, h5, h6 { font-family: var(--font-unbounded); }
-        body, p, button, a, span, div { font-family: var(--font-worksans); }
+
+        @keyframes pulseRing {
+          0% {
+            transform: scale(1);
+            opacity: 0.8;
+          }
+          100% {
+            transform: scale(1.6);
+            opacity: 0;
+          }
+        }
+
+        @keyframes driveDiagonal {
+          0% {
+            transform: translate(0, 0);
+          }
+          50% {
+            transform: translate(18px, -8px);
+          }
+          100% {
+            transform: translate(0, 0);
+          }
+        }
+
+        @keyframes driveReverse {
+          0% {
+            transform: translate(0, 0);
+          }
+          50% {
+            transform: translate(-18px, 10px);
+          }
+          100% {
+            transform: translate(0, 0);
+          }
+        }
+
+        @keyframes blinkDot {
+          0%,
+          100% {
+            opacity: 0.3;
+          }
+          50% {
+            opacity: 1;
+          }
+        }
       `}</style>
 
-      {/* Slides */}
-      <div className="relative h-[58vh] min-h-[420px] md:h-[68vh] lg:h-[78vh] w-full">
-        {SLIDES.map((s, idx) => (
-          <div
-            key={s.key}
-            className={`absolute inset-0 transition-opacity duration-700 ${idx === active ? "opacity-100" : "opacity-0"}`}
-            aria-hidden={idx !== active}
-          >
-            <Image
-              src={s.image}
-              alt={s.key}
-              fill
-              sizes="100vw"
-              className="object-cover"
-              style={{ objectPosition: s.objectPosition || "50% 50%" }}
-              priority={idx === active}
-            />
-            {/* Dark-green tinted veil for readability, matching theme */}
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[var(--dark)]/35 via-black/15 to-[var(--dark)]/35" />
+      <div className="mx-auto flex max-w-7xl flex-col items-center gap-12 px-4 sm:px-6 lg:flex-row lg:items-stretch lg:gap-10 lg:px-8">
+        {/* LEFT: Text / Content */}
+        <div className="relative z-10 max-w-xl lg:max-w-lg">
+          {/* mini pill */}
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#DFFFEA]/20 bg-[#024122]/40 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.2em] text-[#B3FFE4]">
+            <span className="inline-flex h-1.5 w-1.5 rounded-full bg-[#00F06B]" />
+            Electric-first, human-centred mobility
           </div>
-        ))}
 
-        {/* Copy */}
-        <div className="absolute inset-0 mx-auto flex max-w-7xl items-center px-4 sm:px-6 lg:px-8">
-          <div className="max-w-xl sm:max-w-2xl text-white">
-            <h1 className="text-3xl font-extrabold leading-tight sm:text-5xl lg:text-6xl font-[var(--font-unbounded)]">
-              {SLIDES[active].heading.map((line, i) => (
-                <span key={i} className="relative inline-block">
-                  <span className="bg-[var(--eco)] text-black px-1.5 sm:px-2 -rotate-1 inline-block">
-                    {line.split(" ")[0]}{" "}
-                  </span>
-                  <span className="pl-1">
-                    {line.split(" ").slice(1).join(" ")}
-                  </span>
-                  <br />
-                </span>
-              ))}
-            </h1>
+          <h1 className="mt-4 text-3xl font-semibold tracking-tight text-white sm:text-4xl lg:text-[2.7rem] lg:leading-[1.1] font-[var(--nav-font)]">
+            SDrive is more than transport.
+            <span className="block bg-gradient-to-r from-[#00F06B] via-[#3DD9A7] to-[#B3FFE4] bg-clip-text text-transparent">
+              It&apos;s a movement across Africa.
+            </span>
+          </h1>
 
-            {/* CTA: Dark Green, white text */}
-            <a
-              href={SLIDES[active].cta.href}
-              className="mt-5 inline-flex items-center justify-center rounded-full bg-[var(--dark)] px-5 py-3 text-white font-semibold transition hover:brightness-110 font-[var(--font-worksans)]"
-            >
-              {SLIDES[active].cta.label}
-            </a>
+          <p className="mt-4 text-sm sm:text-base text-white/70">
+            SDrive is building a network of safe, dignified and electric mobility
+            for every city we touch. Cars, bikes, taxis and charging stations —
+            all working together so movement feels simple, modern and fair.
+          </p>
+
+          <p className="mt-3 text-sm sm:text-[15px] text-[#DFFFEA]/90">
+            Whether you&apos;re a driver, a passenger, or a partner,
+            <span className="text-[#00F06B]"> we&apos;re here to move you forward.</span>
+          </p>
+
+          {/* quick choices buttons */}
+          <div className="mt-8 space-y-4">
+            <div className="flex flex-wrap gap-3">
+              <a
+                href="#lease-car"
+                className="inline-flex items-center justify-center rounded-full bg-[#00F06B] px-5 py-3 text-sm font-semibold text-[#024122] shadow-[0_10px_35px_rgba(0,240,107,0.26)] transition-transform duration-150 hover:-translate-y-0.5 hover:bg-[#00d65f]"
+              >
+                Lease a Car
+              </a>
+              <a
+                href="#lease-bike"
+                className="inline-flex items-center justify-center rounded-full border border-[#3DD9A7]/60 bg-white/5 px-5 py-3 text-sm font-semibold text-[#DFFFEA] hover:bg-white/10"
+              >
+                Lease a Bike
+              </a>
+              <a
+                href="#book-taxi"
+                className="inline-flex items-center justify-center rounded-full border border-[#B3FFE4]/60 bg-[#024122]/60 px-5 py-3 text-sm font-semibold text-[#B3FFE4] hover:bg-[#024122]/80"
+              >
+                Book a Taxi
+              </a>
+            </div>
+
+            <div className="flex flex-wrap gap-3 text-xs sm:text-[13px]">
+              <a
+                href="#delivery"
+                className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/0 px-4 py-2 font-medium text-white/80 hover:bg-white/5"
+              >
+                <Package className="mr-2 h-4 w-4" />
+                Send a Delivery
+              </a>
+              <a
+                href="#charger"
+                className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/0 px-4 py-2 font-medium text-white/80 hover:bg-white/5"
+              >
+                <Bolt className="mr-2 h-4 w-4 text-[#00F06B]" />
+                Find a Charger
+              </a>
+            </div>
+          </div>
+
+          {/* trust / subline */}
+          <div className="mt-6 flex flex-wrap items-center gap-4 text-xs text-white/50">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#00F06B]/10 text-[10px] font-semibold text-[#00F06B]">
+                EV
+              </span>
+              <span>Electric-ready fleet for modern African cities.</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="inline-flex h-1 w-8 rounded-full bg-gradient-to-r from-[#00F06B] to-[#3DD9A7]" />
+              <span>Designed for drivers, riders & partners.</span>
+            </div>
           </div>
         </div>
 
-        {/* Prev/Next — themed */}
-        <button
-          aria-label="Previous slide"
-          onClick={() => go(-1)}
-          className="absolute left-3 top-1/2 hidden -translate-y-1/2 rounded-full bg-[var(--tint)]/90 p-2 hover:bg-[var(--tint)] sm:inline-flex"
-        >
-          <ChevronLeft className="h-6 w-6 text-[var(--dark)]" />
-        </button>
-        <button
-          aria-label="Next slide"
-          onClick={() => go(1)}
-          className="absolute right-3 top-1/2 hidden -translate-y-1/2 rounded-full bg-[var(--tint)]/90 p-2 hover:bg-[var(--tint)] sm:inline-flex"
-        >
-          <ChevronRight className="h-6 w-6 text-[var(--dark)]" />
-        </button>
-      </div>
+        {/* RIGHT: Animated city / vehicles */}
+        <div className="relative z-10 w-full max-w-xl flex-1 lg:max-w-none">
+          <div className="relative mx-auto h-[320px] w-full max-w-md rounded-3xl border border-white/10 bg-gradient-to-b from-[#06130E] via-[#02120C] to-[#020A06] p-4 shadow-[0_24px_80px_rgba(0,0,0,0.7)] sm:h-[360px] lg:h-[380px]">
+            {/* map grid */}
+            <div className="absolute inset-4 rounded-2xl border border-[#DFFFEA]/10 bg-gradient-to-tr from-[#024122]/60 via-[#020A06] to-[#02120C]/80" />
+            <div className="pointer-events-none absolute inset-6">
+              <div className="h-full w-full rounded-2xl bg-[radial-gradient(circle_at_top,_rgba(0,240,107,0.12),_transparent_60%),_repeating-linear-gradient(90deg,_rgba(179,255,228,0.13)_0,_rgba(179,255,228,0.13)_1px,_transparent_1px,_transparent_22px),_repeating-linear-gradient(0deg,_rgba(179,255,228,0.09)_0,_rgba(179,255,228,0.09)_1px,_transparent_1px,_transparent_22px)] opacity-80" />
+            </div>
 
-      {/* Tabs */}
-      <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div
-          ref={tabsWrapRef}
-          className="relative -mt-10 mb-2 flex items-center gap-5 rounded-2xl bg-[var(--tint)]/95 px-3 py-2.5 shadow-[0_8px_30px_rgba(0,0,0,0.08)] overflow-x-auto no-scrollbar snap-x font-[var(--font-worksans)]"
-        >
-          {SLIDES.map((s, i) => (
-            <button
-              key={s.key}
-              ref={(el) => { btnRefs.current[i] = el; }}
-              className={`relative shrink-0 snap-start px-1 pb-2 text-sm sm:text-[15px] font-semibold transition-colors ${
-                i === active ? "text-[var(--dark)]" : "text-[var(--ink)]/70 hover:text-[var(--dark)]"
-              }`}
-              onClick={() => setActive(i)}
-            >
-              {titleCase(s.key)}
-            </button>
-          ))}
-          <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-[3px]">
+            {/* charging hub card */}
             <div
-              ref={indicatorRef}
-              className="absolute h-[3px] rounded-full bg-[var(--eco)] transition-all"
-              style={{ width: 64, transform: "translateX(0px)" }}
-            />
+              className="absolute left-6 top-5 flex items-center gap-3 rounded-2xl bg-[#020A06]/90 px-3 py-2 shadow-[0_14px_40px_rgba(0,0,0,0.7)]"
+              style={{ animation: "floatSoft 4.8s ease-in-out infinite" }}
+            >
+              <div className="relative flex h-8 w-8 items-center justify-center rounded-xl bg-[#024122]">
+                <Bolt className="h-4 w-4 text-[#00F06B]" />
+                <span
+                  className="pointer-events-none absolute inline-flex h-8 w-8 rounded-full border border-[#00F06B]/30"
+                  style={{ animation: "pulseRing 1.8s ease-out infinite" }}
+                />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[11px] font-medium text-[#DFFFEA]">
+                  Charging hub
+                </span>
+                <span className="text-[10px] text-[#B3FFE4]/80">
+                  12 EVs connected · Live
+                </span>
+              </div>
+            </div>
+
+            {/* moving car */}
+            <div
+              className="absolute left-10 bottom-16 flex items-center gap-2 rounded-2xl bg-[#020A06]/95 px-3 py-2 shadow-[0_10px_32px_rgba(0,0,0,0.8)]"
+              style={{ animation: "driveDiagonal 5s ease-in-out infinite" }}
+            >
+              <div className="flex h-7 w-9 items-center justify-center rounded-xl bg-[#00F06B]">
+                <Car className="h-4 w-4 text-[#024122]" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[11px] font-semibold text-white">
+                  Trip in progress
+                </span>
+                <span className="flex items-center gap-1 text-[10px] text-[#DFFFEA]/80">
+                  <Navigation className="h-3 w-3 text-[#B3FFE4]" />
+                  Yaba → Victoria Island
+                </span>
+              </div>
+            </div>
+
+            {/* moving bike */}
+            <div
+              className="absolute right-10 bottom-10 flex items-center gap-2 rounded-2xl bg-[#020A06]/95 px-3 py-2 shadow-[0_10px_32px_rgba(0,0,0,0.8)]"
+              style={{ animation: "driveReverse 4.4s ease-in-out infinite" }}
+            >
+              <div className="flex h-7 w-9 items-center justify-center rounded-xl bg-[#3DD9A7]">
+                <Bike className="h-4 w-4 text-[#024122]" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[11px] font-semibold text-white">
+                  2-min pickup
+                </span>
+                <span className="text-[10px] text-[#DFFFEA]/80">
+                  Ikeja · EcoBike
+                </span>
+              </div>
+            </div>
+
+            {/* delivery tag */}
+            <div
+              className="absolute right-7 top-16 flex items-center gap-2 rounded-2xl bg-[#024122]/90 px-3 py-2 shadow-[0_10px_30px_rgba(0,0,0,0.6)]"
+              style={{ animation: "floatSoft 5.4s ease-in-out infinite", animationDelay: "0.7s" }}
+            >
+              <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-[#00F06B]/10">
+                <Package className="h-3.5 w-3.5 text-[#B3FFE4]" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[11px] font-medium text-[#DFFFEA]">
+                  Parcel en route
+                </span>
+                <span className="text-[10px] text-[#B3FFE4]/80">
+                  14 min · Guaranteed
+                </span>
+              </div>
+            </div>
+
+            {/* partner stats */}
+            <div className="absolute inset-x-10 bottom-3 flex items-center justify-between rounded-2xl border border-white/8 bg-[#020A06]/85 px-4 py-3 text-[10px] text-[#DFFFEA]/80">
+              <div className="flex flex-col">
+                <span className="text-[11px] font-semibold text-white">
+                  3,200+
+                </span>
+                <span>Active drivers</span>
+              </div>
+              <div className="h-9 w-px bg-white/10" />
+              <div className="flex flex-col">
+                <span className="text-[11px] font-semibold text-[#00F06B]">
+                  68%
+                </span>
+                <span>Electric / hybrid</span>
+              </div>
+              <div className="h-9 w-px bg-white/10" />
+              <div className="flex flex-col text-right">
+                <span className="text-[11px] font-semibold text-[#B3FFE4]">
+                  50+ cities
+                </span>
+                <span>across Africa</span>
+              </div>
+            </div>
+
+            {/* blinking route dots */}
+            <div className="pointer-events-none absolute inset-10">
+              <div
+                className="absolute left-8 top-24 h-2 w-2 rounded-full bg-[#00F06B]"
+                style={{ animation: "blinkDot 1.8s ease-in-out infinite" }}
+              />
+              <div
+                className="absolute left-1/2 top-12 h-2 w-2 rounded-full bg-[#B3FFE4]"
+                style={{
+                  animation: "blinkDot 2.2s ease-in-out infinite",
+                  animationDelay: "0.4s",
+                }}
+              />
+              <div
+                className="absolute right-10 top-32 h-2 w-2 rounded-full bg-[#3DD9A7]"
+                style={{
+                  animation: "blinkDot 2s ease-in-out infinite",
+                  animationDelay: "0.9s",
+                }}
+              />
+              <div
+                className="absolute left-14 bottom-14 h-2 w-2 rounded-full bg-[#00F06B]"
+                style={{
+                  animation: "blinkDot 2.4s ease-in-out infinite",
+                  animationDelay: "0.2s",
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>
     </section>
   );
-}
+};
 
-function titleCase(key: string) {
-  return key.charAt(0).toUpperCase() + key.slice(1);
-}
+export default Hero;

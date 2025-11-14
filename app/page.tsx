@@ -2,13 +2,13 @@
 
 import Navbar from "./components/Navbar"
 import Hero from "./components/Hero"
-import Home from "./components/Home"
-import Section from "./components/Section"
-import About from "./components/About"
-import ServicesSection from "./components/ServicesSection"
-import Client from "./components/Client"
-import Blog from "./components/Blog"
-import Safety from "./components/Safety"
+import LeaseCar from "./components/LeaseCar"
+import LeaseBike from "./components/LeaseBike"
+import TaxiService from "./components/TaxiService"
+import DeliveryService from "./components/DeliveryService"
+import ChargingStations from "./components/ChargingStations"
+import HeroVideoSection from "./components/HeroVideoSection"
+import TermsCondition from "./components/TermsCondition"
 import Footer from "./components/Footer"
 
 export default function Page() {
@@ -16,13 +16,13 @@ export default function Page() {
     <>
       <Navbar />
       <Hero />
-      <Home />
-      <Section />
-      <About />
-      <ServicesSection />
-      <Client />
-      <Blog />
-      <Safety />
+      <LeaseCar />
+      <LeaseBike />
+      <TaxiService />
+      <DeliveryService />
+      <ChargingStations />
+      <HeroVideoSection />
+      <TermsCondition />
       <Footer />
     </>
   )
