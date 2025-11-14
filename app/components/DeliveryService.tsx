@@ -176,7 +176,7 @@ const DeliveryService: React.FC = () => {
             >
               <div className="relative h-[230px] w-[360px] sm:h-[250px] sm:w-[380px]">
                 <Image
-                  src="/service1.png"
+                  src="/image5.png"
                   alt="SDrive Delivery illustration"
                   fill
                   className="object-contain drop-shadow-[0_26px_50px_rgba(2,65,34,0.32)] pointer-events-none"
